@@ -7,7 +7,7 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 logger = logging.getLogger(__name__)
 
 class DeepSeekImageUnderstanding:
-    "Image Understanding Node for DeepSeek Janus"
+    """Image Understanding Node for DeepSeek Janus"""
     
     @classmethod
     def INPUT_TYPES(cls):
@@ -54,7 +54,7 @@ class DeepSeekImageUnderstanding:
             image = (torch.clamp(image, 0, 1) * 255).cpu().numpy().astype(np.uint8)
             
             # Convert to PIL Image
-            pil_image = Image.fromarray(image, mode=&#39;RGB&#39;)
+            pil_image = Image.fromarray(image, mode='RGB')
 
             # 构建对话上下文
             conversation = [
@@ -69,7 +69,7 @@ class DeepSeekImageUnderstanding:
             model_inputs = tokenizer(
                 conversations=conversation, 
                 images=[pil_image], 
-                return_tensors=&#39;pt&#39;
+                return_tensors='pt'
             ).to(model.device)
 
             # 生成响应
@@ -87,3 +87,13 @@ class DeepSeekImageUnderstanding:
         except Exception as e:
             logger.error(f"Error in image understanding: {e}", exc_info=True)
             return ("An error occurred during image analysis.",)
+
+# 节点类映射
+NODE_CLASS_MAPPINGS = {
+    "DeepSeekImageUnderstanding": DeepSeekImageUnderstanding
+}
+
+# 节点显示名称映射
+NODE_DISPLAY_NAME_MAPPINGS = {
+    "DeepSeekImageUnderstanding": "DeepSeek Image Understanding"
+}
