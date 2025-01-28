@@ -23,7 +23,7 @@ class DeepSeekModelLoader:
         # 获取所有子文件夹名称
         model_names = [
             name for name in os.listdir(deepseek_janus_path)
-            if os.path.isdir(os.path.join(deepseek_janus_path, name)) and name.lower() == model_name.lower()
+            if os.path.isdir(os.path.join(deepseek_janus_path, name))
         ]
         if not model_names:
             raise ValueError(
