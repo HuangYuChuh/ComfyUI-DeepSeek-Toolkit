@@ -1,82 +1,29 @@
-# ComfyUI DeepSeek Janus Pro Node
+# ComfyUI-DeepSeek_Toolkit
 
-## Overview
-This custom node for ComfyUI provides advanced multi-modal AI capabilities using DeepSeek Janus Pro models, enabling image generation, understanding, and analysis.
+## 简介
+ComfyUI-DeepSeek_Toolkit 是一个用于 ComfyUI 的深度学习工具包，提供了多种功能来增强图像生成和理解的能力。
 
-## Features
-- 🔍 Image Understanding
-- 🖼️ Image Generation
-- 🤖 Multi-modal AI Processing
+## 功能
+- **模型加载**: 提供高效的模型加载机制。
+- **图像理解**: 提供图像分析和理解的功能。
+- **图像生成**: 提供高质量图像生成的功能。
 
-## Installation
+## 安装
+1. 克隆仓库到本地：
+   ```bash
+   git clone https://github.com/your-repo/ComfyUI-DeepSeek_Toolkit.git
+   cd ComfyUI-DeepSeek_Toolkit
+   ```
+2. 安装依赖：
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-### Prerequisites
-- ComfyUI
-- Python 3.8+
-- CUDA-capable GPU (recommended)
+## 使用方法
+请参考各个模块的文档以获取详细使用说明。
 
-### Setup
-1. Clone the repository into your ComfyUI `custom_nodes` directory:
-```bash
-cd custom_nodes
-git clone https://github.com/yourusername/ComfyUI-DeepSeek_Janus.git
-```
+## 贡献
+欢迎提交问题和拉取请求。请确保遵循贡献指南 [CONTRIBUTING.md](CONTRIBUTING.md)。
 
-2. Install dependencies:
-```bash
-cd ComfyUI-DeepSeek_Janus
-pip install -r requirements.txt
-```
-
-3. Download DeepSeek Janus Pro model:
-- Place the model in `ComfyUI/models/deepseek_janus/`
-
-## Available Nodes
-
-### 1. DeepSeek Model Loader
-- Load DeepSeek Janus Pro models
-- Supports local and remote model loading
-- Automatic device and precision selection
-
-### 2. Image Understanding
-- Analyze images with detailed descriptions
-- Supports custom prompts and questions
-- Multi-modal understanding capabilities
-
-### 3. Image Generation
-- Generate images from text prompts
-- Configurable generation parameters
-- Batch image generation support
-
-## Usage Examples
-
-### Basic Image Understanding
-1. Load Model
-2. Connect an Image
-3. Provide a Question
-4. Get Detailed Analysis
-
-### Image Generation
-1. Load Model
-2. Input Prompt
-3. Configure Generation Parameters
-4. Generate Images
-
-## Model Versions
-- Janus Pro 1B
-- Janus Pro 7B
-
-## Troubleshooting
-- Ensure CUDA is properly installed
-- Check model download and placement
-- Verify dependencies are correctly installed
-
-## Contributing
-Contributions are welcome! Please submit pull requests or open issues.
-
-## License
-[Your License Here]
-
-## Acknowledgements
-- DeepSeek AI
-- ComfyUI Community
+## 许可证
+本项目采用 MIT 许可证。详情请参阅 [LICENSE](LICENSE) 文件。

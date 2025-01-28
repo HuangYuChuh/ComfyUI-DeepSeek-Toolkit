@@ -62,10 +62,10 @@ class DeepSeekImageGeneration:
     FUNCTION = "generate_images"
     CATEGORY = "DeepSeek_Toolkit/DeepSeek_Multimodal"
 
-    def generate_images(self, 
-                        model, 
-                        processor, 
-                        prompt: str, 
+    def generate_images(self,
+                        model,
+                        tokenizer,
+                        prompt: str,
                         batch_size: int = 1,
                         temperature: float = 1.0,
                         guidance_scale: float = 7.5,
