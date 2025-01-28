@@ -13,10 +13,10 @@ class DeepSeekModelLoader:
     
     @staticmethod
     def get_available_models():
-        """Scan models/deepseek_janus directory and return subfolder names"""
+        """Scan models/deepseek_janus/Janus-Pro directory and return subfolder names"""
         import os
         models_path = folder_paths.models_dir
-        deepseek_janus_path = os.path.join(models_path, "deepseek_janus")
+        deepseek_janus_path = os.path.join(models_path, "deepseek_janus", "Janus-Pro")
         if not os.path.exists(deepseek_janus_path):
             raise ValueError(
                 f"目录未找到: {deepseek_janus_path}. "
@@ -65,12 +65,12 @@ class DeepSeekModelLoader:
                 # 获取ComfyUI根目录
                 models_path = folder_paths.models_dir
                 # 构建模型路径
-                model_dir = os.path.join(models_path, "deepseek_janus", model_name)
+                model_dir = os.path.join(models_path, "deepseek_janus", "Janus-Pro", model_name)
                 
                 if not os.path.exists(model_dir):
                     raise ValueError(
                         f"本地模型未在 {model_dir} 找到. "
-                        "请下载模型并将其放置在 ComfyUI/models/deepseek_janus 文件夹中。"
+                        "请下载模型并将其放置在 ComfyUI/models/deepseek_janus/Janus-Pro 文件夹中。"
                     )
                 model_path = model_dir
             else:
@@ -87,19 +87,19 @@ class DeepSeekModelLoader:
                 )
             except Exception as e:
                 raise ValueError(
-                    f"无法从 {model_path} 加载处理器. 请确保已下载正确的模型文件并将其放置在 models/deepseek_janus 文件夹中. 错误：{str(e)}"
+                    f"无法从 {model_path} 加载处理器. 请确保已下载正确的模型文件并将其放置在 models/deepseek_janus/Janus-Pro 文件夹中. 错误：{str(e)}"
                 )
 
             try:
                 model = AutoModelForCausalLM.from_pretrained(
-                    model_path,
+                    str(model_path),
                     trust_remote_code=True,
                     torch_dtype=dtype,
                     device_map="auto"
                 )
             except Exception as e:
                 raise ValueError(
-                    f"无法从 {model_path} 加载模型. 请确保已下载正确的模型文件并将其放置在 models/deepseek_janus 文件夹中. 错误：{str(e)}"
+                    f"无法从 {model_path} 加载模型. 请确保已下载正确的模型文件并将其放置在 models/deepseek_janus/Janus-Pro 文件夹中. 错误：{str(e)}"
                 )
             
             # 将模型移动到正确的设备和数据类型
