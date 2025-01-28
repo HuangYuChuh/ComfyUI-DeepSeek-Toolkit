@@ -24,7 +24,7 @@ class DeepSeekImageUnderstanding:
     FUNCTION = "understand_image"
     CATEGORY = "DeepSeek_Toolkit/DeepSeek_Multimodal"
 
-    def understand_image(self, model, processor, image, question):
+    def understand_image(self, model, tokenizer, image, question):
         """
         Analyze an image using DeepSeek's multi-modal model
         

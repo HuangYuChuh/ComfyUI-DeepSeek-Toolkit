@@ -105,7 +105,7 @@ class DeepSeekImageGeneration:
                 conversation.insert(0, {"role": "user", "content": negative_prompt})
 
             # Prepare inputs
-            inputs = processor(
+            inputs = tokenizer(
                 conversations=conversation,
                 return_tensors="pt",
                 truncation=True,
