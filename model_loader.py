@@ -2,6 +2,8 @@ import os
 import torch
 import folder_paths
 from typing import Tuple
+from transformers import AutoModelForCausalLM, AutoProcessor  # 添加正确导入
+from janus.models import MultiModalityCausalLM, VLChatProcessor  # type: ignore
 
 class DeepSeekModelLoader:
     """Model loader node for DeepSeek Janus Pro"""
@@ -17,8 +19,8 @@ class DeepSeekModelLoader:
         deepseek_janus_path = os.path.join(models_path, "deepseek_janus")
         if not os.path.exists(deepseek_janus_path):
             raise ValueError(
-                f"Directory not found: {deepseek_janus_path}. "
-                "Please ensure the models are placed in the correct location."
+                f"目录未找到: {deepseek_janus_path}. "
+                "请确保模型放置在正确的位置。"
             )
         # 获取所有子文件夹名称
         model_names = [
@@ -27,8 +29,8 @@ class DeepSeekModelLoader:
         ]
         if not model_names:
             raise ValueError(
-                f"No models found in {deepseek_janus_path}. "
-                "Please download and place the models in the correct location."
+                f"{deepseek_janus_path} 中未找到模型. "
+                "请下载并将模型放置在正确的位置。"
             )
         return model_names
     
@@ -50,11 +52,6 @@ class DeepSeekModelLoader:
 
     def load_model(self, model_name: str, use_local: bool) -> Tuple:
         """Load DeepSeek Janus Pro model and processor"""
-        try:
-            from transformers import AutoProcessor, AutoModelForVision2Seq
-        except ImportError:
-            raise ImportError("Please install required packages using 'pip install -r requirements.txt'")
-
         # 设置设备和数据类型
         device = "cuda" if torch.cuda.is_available() else "cpu"
         try:
@@ -68,40 +65,51 @@ class DeepSeekModelLoader:
                 # 获取ComfyUI根目录
                 models_path = folder_paths.models_dir
                 # 构建模型路径
-                model_dir = os.path.join(
-                    models_path,
-                    "deepseek_janus",
-                    os.path.basename(model_name)
-                )
+                model_dir = os.path.join(models_path, "deepseek_janus", model_name)
                 
                 if not os.path.exists(model_dir):
                     raise ValueError(
-                        f"Local model not found at {model_dir}. "
-                        "Please download the model and place it in the ComfyUI/models/deepseek_janus folder."
+                        f"本地模型未在 {model_dir} 找到. "
+                        "请下载模型并将其放置在 ComfyUI/models/deepseek_janus 文件夹中。"
                     )
                 model_path = model_dir
             else:
                 model_path = model_name
 
-            print(f"Loading DeepSeek Janus model from {model_path}")
+            print(f"从 {model_path} 加载 DeepSeek Janus 模型")
             
             # 加载处理器和模型
-            processor = AutoProcessor.from_pretrained(model_path)
-            model = AutoModelForVision2Seq.from_pretrained(
-                model_path,
-                trust_remote_code=True,
-                torch_dtype=dtype,
-                device_map="auto"
-            )
+            try:
+                processor = VLChatProcessor.from_pretrained(
+                    str(model_path),
+                    trust_remote_code=True,
+                    use_fast=False
+                )
+            except Exception as e:
+                raise ValueError(
+                    f"无法从 {model_path} 加载处理器. 请确保已下载正确的模型文件并将其放置在 models/deepseek_janus 文件夹中. 错误：{str(e)}"
+                )
+
+            try:
+                model = AutoModelForCausalLM.from_pretrained(
+                    model_path,
+                    trust_remote_code=True,
+                    torch_dtype=dtype,
+                    device_map="auto"
+                )
+            except Exception as e:
+                raise ValueError(
+                    f"无法从 {model_path} 加载模型. 请确保已下载正确的模型文件并将其放置在 models/deepseek_janus 文件夹中. 错误：{str(e)}"
+                )
             
-            # 将模型移到正确的设备和数据类型
+            # 将模型移动到正确的设备和数据类型
             model = model.to(dtype).to(device).eval()
             
-            print("DeepSeek Janus model loaded successfully")
+            print("DeepSeek Janus 模型加载成功")
             return (model, processor)
 
         except Exception as e:
-            print(f"Error loading model: {str(e)}")
+            print(f"加载模型时出错: {str(e)}")
             raise
 
 # 节点类映射

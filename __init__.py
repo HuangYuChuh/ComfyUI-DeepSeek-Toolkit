@@ -6,9 +6,10 @@ from typing import Dict, Any
 sys.path.insert(0, os.path.dirname(os.path.realpath(__file__)))
 
 # Import node mappings from each module
-from model_loader import NODE_CLASS_MAPPINGS as MODEL_LOADER_NODES
-from image_understanding import NODE_CLASS_MAPPINGS as IMAGE_UNDERSTANDING_NODES
-from image_generation import NODE_CLASS_MAPPINGS as IMAGE_GENERATION_NODES
+# 使用相对导入
+from .model_loader import NODE_CLASS_MAPPINGS as MODEL_LOADER_NODES
+from .image_understanding import NODE_CLASS_MAPPINGS as IMAGE_UNDERSTANDING_NODES
+from .image_generation import NODE_CLASS_MAPPINGS as IMAGE_GENERATION_NODES
 
 # Combine all node mappings
 NODE_CLASS_MAPPINGS: Dict[str, Any] = {
