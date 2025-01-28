@@ -58,7 +58,7 @@ class DeepSeekImageGeneration:
         }
     
     RETURN_TYPES = ("IMAGE",)
-    RETURN_NAMES = ("generated_images",)
+    RETURN_NAMES = ("images",)
     FUNCTION = "generate_images"
     CATEGORY = "DeepSeek_Toolkit/DeepSeek_Multimodal"
 

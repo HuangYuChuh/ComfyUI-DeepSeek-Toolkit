@@ -8,12 +8,35 @@ class DeepSeekModelLoader:
     
     def __init__(self):
         self.local_model_path = None
-        
+    
+    @staticmethod
+    def get_available_models():
+        """Scan models/deepseek_janus directory and return subfolder names"""
+        import os
+        models_path = folder_paths.models_dir
+        deepseek_janus_path = os.path.join(models_path, "deepseek_janus")
+        if not os.path.exists(deepseek_janus_path):
+            raise ValueError(
+                f"Directory not found: {deepseek_janus_path}. "
+                "Please ensure the models are placed in the correct location."
+            )
+        # 获取所有子文件夹名称
+        model_names = [
+            name for name in os.listdir(deepseek_janus_path)
+            if os.path.isdir(os.path.join(deepseek_janus_path, name))
+        ]
+        if not model_names:
+            raise ValueError(
+                f"No models found in {deepseek_janus_path}. "
+                "Please download and place the models in the correct location."
+            )
+        return model_names
+    
     @classmethod
     def INPUT_TYPES(cls):
         return {
             "required": {
-                "model_name": (["janus-pro-7b"],),
+                "model_name": (cls.get_available_models(),),
                 "use_local": ([True, False], {
                     "default": True
                 }),

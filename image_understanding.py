@@ -20,7 +20,7 @@ class DeepSeekImageUnderstanding:
         }
     
     RETURN_TYPES = ("STRING",)
-    RETURN_NAMES = ("analysis",)
+    RETURN_NAMES = ("text",)
     FUNCTION = "understand_image"
     CATEGORY = "DeepSeek_Toolkit/DeepSeek_Multimodal"
 
