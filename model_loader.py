@@ -8,6 +8,8 @@ import folder_paths
 class DeepSeekModelLoader:
     """Model loader node for DeepSeek Janus Pro"""
 
+    DEFAULT_MODELS = ["Janus-Pro-1B", "Janus-Pro-7B"]
+
     def __init__(self):
         self.local_model_path = None
 
@@ -16,20 +18,20 @@ class DeepSeekModelLoader:
         """Scan models/deepseek_janus/Janus-Pro directory and return subfolder names"""
         models_path = folder_paths.models_dir
         deepseek_janus_path = os.path.join(models_path, "deepseek_janus", "Janus-Pro")
+        
         if not os.path.exists(deepseek_janus_path):
-            raise ValueError(
-                f"目录未找到: {deepseek_janus_path}. "
-                "请确保模型放置在正确的位置。"
-            )
+            print(f"目录未找到: {deepseek_janus_path}")
+            return DeepSeekModelLoader.DEFAULT_MODELS
+
         model_names = [
             name for name in os.listdir(deepseek_janus_path)
             if os.path.isdir(os.path.join(deepseek_janus_path, name))
         ]
+
         if not model_names:
-            raise ValueError(
-                f"{deepseek_janus_path} 中未找到模型. "
-                "请下载并将模型放置在正确的位置。"
-            )
+            print(f"在 {deepseek_janus_path} 中未找到模型，使用默认列表")
+            return DeepSeekModelLoader.DEFAULT_MODELS
+
         return model_names
 
     @classmethod
@@ -64,8 +66,12 @@ class DeepSeekModelLoader:
 
                 if not os.path.exists(model_dir):
                     raise ValueError(
-                        f"本地模型未在 {model_dir} 找到. "
-                        "请下载模型并将其放置在 ComfyUI/models/deepseek_janus/Janus-Pro 文件夹中。"
+                        f"本地模型未在 {model_dir} 找到。\n\n"
+                        "您需要：\n"
+                        "1. 创建目录：models/deepseek_janus/Janus-Pro\n"
+                        "2. 下载模型文件\n"
+                        "3. 将模型文件放入上述目录中\n\n"
+                        "如需帮助，请查看项目文档。"
                     )
                 model_path = model_dir
             else:
