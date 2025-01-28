@@ -76,12 +76,28 @@ class DeepSeekModelLoader:
 
             print(f"从 {model_path} 加载 DeepSeek Janus 模型")
 
-            # 加载 tokenizer 和 processor
-            tokenizer = AutoTokenizer.from_pretrained(model_path)
-            processor = VLChatProcessor.from_pretrained(model_path, image_processor=None, tokenizer=tokenizer)
+            # 创建临时文件夹用于模型权重
+            temp_folder = os.path.join(folder_paths.temp_directory, "janus_model_weights")
+            os.makedirs(temp_folder, exist_ok=True)
+
+            # 加载 tokenizer
+            tokenizer = AutoTokenizer.from_pretrained(model_path, trust_remote_code=True)
+
+            # 加载处理器
+            processor = VLChatProcessor.from_pretrained(
+                model_path,
+                tokenizer=tokenizer,
+                trust_remote_code=True
+            )
 
             # 加载模型
-            model = AutoModelForCausalLM.from_pretrained(model_path, trust_remote_code=True, torch_dtype=dtype, device_map="auto")
+            model = AutoModelForCausalLM.from_pretrained(
+                model_path,
+                trust_remote_code=True,
+                torch_dtype=dtype,
+                device_map="auto",
+                offload_folder=temp_folder
+            )
 
             model = model.to(dtype).to(device).eval()
 
