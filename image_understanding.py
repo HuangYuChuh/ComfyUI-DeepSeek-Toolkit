@@ -43,7 +43,7 @@ class DeepSeekImageUnderstanding:
         """
         try:
             # Log the image parameter
-            logger.info(f"Received image: {image}")
+            logger.info(f"Received image tensor with shape: {image.shape}")
 
             # 图像预处理
             if len(image.shape) == 4:  # BCHW format
@@ -72,12 +72,35 @@ class DeepSeekImageUnderstanding:
                 return_tensors='pt'
             ).to(model.device)
 
-            # 生成响应
-            outputs = model.generate(
-                **model_inputs,
-                max_new_tokens=512,
-                do_sample=False
-            )
+            try:
+                # 首先尝试使用 text_generate
+                with torch.no_grad():
+                    outputs = model.text_generate(
+                        **model_inputs,
+                        max_new_tokens=512,
+                        do_sample=False
+                    )
+            except AttributeError:
+                try:
+                    # 如果 text_generate 不可用，尝试使用 chat
+                    with torch.no_grad():
+                        outputs = model.chat(
+                            tokenizer,
+                            question,
+                            history=[],
+                            images=[pil_image],
+                            max_new_tokens=512,
+                            do_sample=False
+                        )
+                        return (outputs,)
+                except AttributeError:
+                    # 如果 chat 也不可用，使用标准 generate
+                    with torch.no_grad():
+                        outputs = model.generate(
+                            **model_inputs,
+                            max_new_tokens=512,
+                            do_sample=False
+                        )
 
             # 解码响应
             answer = tokenizer.decode(outputs[0], skip_special_tokens=True)

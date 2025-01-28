@@ -8,7 +8,7 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 logger = logging.getLogger(__name__)
 
 class DeepSeekImageGeneration:
-    "Enhanced Image Generation Node for DeepSeek Janus Pro"
+    """Enhanced Image Generation Node for DeepSeek Janus Pro"""
     
     @classmethod
     def INPUT_TYPES(cls):
@@ -110,7 +110,7 @@ class DeepSeekImageGeneration:
             # Prepare inputs
             inputs = tokenizer(
                 conversations=conversation,
-                return_tensors=&#39;pt&#39;,
+                return_tensors="pt",
                 truncation=True,
                 max_length=max_length,
                 padding=True
@@ -122,18 +122,32 @@ class DeepSeekImageGeneration:
                 for k, v in inputs.items()
             }
 
-            # Generate images
-            with torch.no_grad():
-                outputs = model.generate(
-                    **batch_inputs,
-                    do_sample=True,
-                    temperature=temperature,
-                    guidance_scale=guidance_scale,
-                    num_beams=batch_size * 2,
-                    max_length=max_length + 20,
-                    pad_token_id=tokenizer.tokenizer.pad_token_id,
-                    eos_token_id=tokenizer.tokenizer.eos_token_id,
-                )
+            try:
+                # Generate images
+                with torch.no_grad():
+                    outputs = model.text_generate(  # Changed from generate to text_generate
+                        **batch_inputs,
+                        do_sample=True,
+                        temperature=temperature,
+                        guidance_scale=guidance_scale,
+                        num_beams=batch_size * 2,
+                        max_length=max_length + 20,
+                        pad_token_id=tokenizer.tokenizer.pad_token_id,
+                        eos_token_id=tokenizer.tokenizer.eos_token_id,
+                    )
+            except AttributeError:
+                # Fallback to regular generate if text_generate is not available
+                with torch.no_grad():
+                    outputs = model.generate(
+                        **batch_inputs,
+                        do_sample=True,
+                        temperature=temperature,
+                        guidance_scale=guidance_scale,
+                        num_beams=batch_size * 2,
+                        max_length=max_length + 20,
+                        pad_token_id=tokenizer.tokenizer.pad_token_id,
+                        eos_token_id=tokenizer.tokenizer.eos_token_id,
+                    )
 
             # Decode and process images
             images = model.decode_images(outputs)
