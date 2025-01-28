@@ -75,7 +75,7 @@ class DeepSeekImageUnderstanding:
             try:
                 # 首先尝试使用 text_generate
                 with torch.no_grad():
-                    outputs = model.text_generate(
+                    outputs = model.generate(
                         **model_inputs,
                         max_new_tokens=512,
                         do_sample=False

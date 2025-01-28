@@ -1,8 +1,8 @@
 import os
 import torch
 from typing import Tuple
-from transformers import AutoModelForCausalLM, AutoTokenizer
-from janus.models import VLChatProcessor  # type: ignore
+from transformers import AutoTokenizer
+from janus.models import MultiModalityCausalLM, VLChatProcessor  # type: ignore
 import folder_paths
 
 class DeepSeekModelLoader:
@@ -97,7 +97,7 @@ class DeepSeekModelLoader:
             )
 
             # 加载模型
-            model = AutoModelForCausalLM.from_pretrained(
+            model = MultiModalityCausalLM.from_pretrained(
                 model_path,
                 trust_remote_code=True,
                 torch_dtype=dtype,

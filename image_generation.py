@@ -125,7 +125,7 @@ class DeepSeekImageGeneration:
             try:
                 # Generate images
                 with torch.no_grad():
-                    outputs = model.text_generate(  # Changed from generate to text_generate
+                    outputs = model.generate_image(
                         **batch_inputs,
                         do_sample=True,
                         temperature=temperature,
