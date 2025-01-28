@@ -1,0 +1,5 @@
+torch>=1.13.1
+transformers>=4.35.0
+pillow
+numpy
+deepseek-vl
