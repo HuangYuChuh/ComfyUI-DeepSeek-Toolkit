@@ -70,7 +70,7 @@ class DeepSeekModelLoader:
                 # 构建模型路径
                 model_dir = os.path.join(
                     models_path,
-                    "ComfyUI/models/deepseek_janus",
+                    "deepseek_janus",
                     os.path.basename(model_name)
                 )
                 
