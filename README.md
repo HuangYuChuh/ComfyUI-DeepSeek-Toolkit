@@ -1,29 +1,83 @@
 # ComfyUI-DeepSeek_Toolkit
 
-## 简介
-ComfyUI-DeepSeek_Toolkit 是一个用于 ComfyUI 的深度学习工具包，提供了多种功能来增强图像生成和理解的能力。
+ComfyUI-DeepSeek_Toolkit 是一个用于 ComfyUI 的深度学习工具包，集成了 DeepSeek Janus 模型，提供了图像生成和图像理解的功能。
 
-## 功能
-- **模型加载**: 提供高效的模型加载机制。
-- **图像理解**: 提供图像分析和理解的功能。
-- **图像生成**: 提供高质量图像生成的功能。
+## 功能特性
 
-## 安装
-1. 克隆仓库到本地：
+- **图像生成 (Image Generation)**
+  - 支持使用 DeepSeek Janus Pro 模型进行图像生成
+  - 可调节的参数包括：batch size、temperature、guidance scale 等
+  - 支持正向提示词和负向提示词
+
+- **图像理解 (Image Understanding)**
+  - 基于 DeepSeek Janus 模型的图像理解功能
+  - 支持图像问答和描述生成
+  - 多模态交互支持
+
+## 系统要求
+
+- Python 3.8+
+- PyTorch
+- ComfyUI
+- 足够的 GPU 内存（默认使用设备内存的 90%，可通过 `max_memory` 参数调整）
+
+## 安装说明
+
+1. 确保已安装 ComfyUI
+2. 克隆本仓库到 ComfyUI 的 custom_nodes 目录：
    ```bash
-   git clone https://github.com/your-repo/ComfyUI-DeepSeek_Toolkit.git
-   cd ComfyUI-DeepSeek_Toolkit
+   cd custom_nodes
+   git clone https://github.com/your-username/ComfyUI-DeepSeek_Toolkit.git
    ```
-2. 安装依赖：
+3. 安装依赖：
    ```bash
    pip install -r requirements.txt
    ```
 
 ## 使用方法
-请参考各个模块的文档以获取详细使用说明。
 
-## 贡献
-欢迎提交问题和拉取请求。请确保遵循贡献指南 [CONTRIBUTING.md](CONTRIBUTING.md)。
+### 图像生成
+
+1. 在 ComfyUI 工作流中添加 &quot;DeepSeek Image Generation Pro&quot; 节点
+2. 配置以下参数：
+   - Model: DeepSeek 模型实例
+   - Tokenizer: DeepSeek tokenizer 实例
+   - Prompt: 生成图像的文本描述
+   - Batch Size: 生成图像的数量（1-16）
+   - Temperature: 采样温度（0.1-2.0）
+   - Guidance Scale: 引导比例（1.0-20.0）
+   - Max Length: 最大序列长度（1-256）
+   - Image Size: 输出图像尺寸（256-1024）
+   - Negative Prompt（可选）: 负面提示词
+
+### 图像理解
+
+1. 在 ComfyUI 工作流中添加 &quot;DeepSeek Image Understanding&quot; 节点
+2. 配置以下参数：
+   - Model: DeepSeek 模型实例
+   - Tokenizer: DeepSeek tokenizer 实例
+   - Image: 输入图像
+   - Question: 关于图像的问题或描述要求
+
+## 注意事项
+
+1. 内存使用：
+   - 默认使用 GPU 设备内存的 90%用于存储模型
+   - 剩余 10% 用作缓冲区以避免 OOM
+   - 可以通过设置 `max_memory` 参数来调整内存使用（需谨慎使用）
+
+2. 已知问题：
+   - MultiModalityCausalLM 模型类需要特殊处理语言模型头部
+   - 某些处理器配置参数可能不会生效（包括：image_tag, mask_prompt, ignore_id, sft_format, num_image_tokens, add_special_token）
+
+## 贡献指南
+
+欢迎提交 Pull Requests 或 Issues。在提交之前，请确保：
+
+1. 代码符合 PEP 8 规范
+2. 添加了适当的测试用例
+3. 更新了相关文档
 
 ## 许可证
-本项目采用 MIT 许可证。详情请参阅 [LICENSE](LICENSE) 文件。
+
+本项目采用 MIT 许可证。详情请参见 [LICENSE](LICENSE) 文件。

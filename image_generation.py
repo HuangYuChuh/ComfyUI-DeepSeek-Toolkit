@@ -8,7 +8,7 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 logger = logging.getLogger(__name__)
 
 class DeepSeekImageGeneration:
-    """Enhanced Image Generation Node for DeepSeek Janus Pro"""
+    "Enhanced Image Generation Node for DeepSeek Janus Pro"
     
     @classmethod
     def INPUT_TYPES(cls):
@@ -62,10 +62,10 @@ class DeepSeekImageGeneration:
     FUNCTION = "generate_images"
     CATEGORY = "DeepSeek_Toolkit/DeepSeek_Multimodal"
 
-    def generate_images(self,
-                        model,
-                        tokenizer,
-                        prompt: str,
+    def generate_images(self, 
+                        model, 
+                        tokenizer, 
+                        prompt: str, 
                         batch_size: int = 1,
                         temperature: float = 1.0,
                         guidance_scale: float = 7.5,
@@ -94,96 +94,9 @@ class DeepSeekImageGeneration:
             if not prompt or not isinstance(prompt, str):
                 raise ValueError("Invalid prompt: Must be a non-empty string")
             
-            # Log the image parameter
-            logger.info(f"Received image: {image}")
-            
-            # Prepare conversation context
-            conversation = [
-                {"role": "user", "content": prompt},
-                {"role": "assistant", "content": ""}
-            ]
-    
-            # Optional negative prompt handling
-            if negative_prompt:
-                conversation.insert(0, {"role": "user", "content": negative_prompt})
-    
-            # Prepare inputs
-            inputs = tokenizer(
-                conversations=conversation,
-                return_tensors="pt",
-                truncation=True,
-                max_length=max_length,
-                padding=True
-            ).to(model.device)
-    
-            # Prepare batch inputs for Classifier-Free Guidance
-            batch_inputs = {
-                k: torch.cat([v] * 2 * batch_size)
-                for k, v in inputs.items()
-            }
-    
-            # Generate images
-            with torch.no_grad():
-                outputs = model.generate(
-                    **batch_inputs,
-                    do_sample=True,
-                    temperature=temperature,
-                    guidance_scale=guidance_scale,
-                    num_beams=batch_size * 2,
-                    max_length=max_length + 20,
-                    pad_token_id=tokenizer.tokenizer.pad_token_id,
-                    eos_token_id=tokenizer.tokenizer.eos_token_id,
-                )
-    
-            # Decode and process images
-            images = model.decode_images(outputs)
-            images = images.cpu().numpy()
-            
-            # Ensure RGB format
-            if images.shape[1] != 3:
-                images = np.repeat(images, 3, axis=1)
-            
-            # Normalize and clip
-            images = (images + 1) / 2
-            images = np.clip(images, 0, 1)
-            
-            # Transpose to [B,H,W,C]
-            images = np.transpose(images, (0, 2, 3, 1))
-            
-            # Convert to tensor
-            images = torch.from_numpy(images).float()
-            
-            logger.info(f"Generated {batch_size} images with size {images.shape}")
-            
-            return (images,)
-        
-        except Exception as e:
-            logger.error(f"Image generation error: {e}", exc_info=True)
-            # Return a black image as error indicator
-            error_image = torch.zeros((1, image_size, image_size, 3))
-            return (error_image,)
-        """
-        Advanced image generation using DeepSeek's multi-modal model
-        
-        Args:
-            model: DeepSeek vision-language model
-            processor: Model's processor
-            prompt: Primary text prompt for image generation
-            batch_size: Number of images to generate
-            temperature: Sampling temperature
-            guidance_scale: Classifier-free guidance scale
-            max_length: Maximum sequence length
-            image_size: Output image size
-            negative_prompt: Optional negative prompt to guide generation
-            
-        Returns:
-            Generated images as tensor
-        """
-        try:
-            # Input validation
-            if not prompt or not isinstance(prompt, str):
-                raise ValueError("Invalid prompt: Must be a non-empty string")
-            
+            # Log the prompt parameter
+            logger.info(f"Received prompt: {prompt}")
+
             # Prepare conversation context
             conversation = [
                 {"role": "user", "content": prompt},
@@ -197,7 +110,7 @@ class DeepSeekImageGeneration:
             # Prepare inputs
             inputs = tokenizer(
                 conversations=conversation,
-                return_tensors="pt",
+                return_tensors=&#39;pt&#39;,
                 truncation=True,
                 max_length=max_length,
                 padding=True
@@ -218,8 +131,8 @@ class DeepSeekImageGeneration:
                     guidance_scale=guidance_scale,
                     num_beams=batch_size * 2,
                     max_length=max_length + 20,
-                    pad_token_id=processor.tokenizer.pad_token_id,
-                    eos_token_id=processor.tokenizer.eos_token_id,
+                    pad_token_id=tokenizer.tokenizer.pad_token_id,
+                    eos_token_id=tokenizer.tokenizer.eos_token_id,
                 )
 
             # Decode and process images
@@ -243,7 +156,7 @@ class DeepSeekImageGeneration:
             logger.info(f"Generated {batch_size} images with size {images.shape}")
             
             return (images,)
-
+        
         except Exception as e:
             logger.error(f"Image generation error: {e}", exc_info=True)
             # Return a black image as error indicator
@@ -255,6 +168,7 @@ NODE_CLASS_MAPPINGS = {
     "DeepSeekImageGeneration": DeepSeekImageGeneration
 }
 
+# Node display name mappings
 NODE_DISPLAY_NAME_MAPPINGS = {
     "DeepSeekImageGeneration": "DeepSeek Image Generation Pro"
 }
