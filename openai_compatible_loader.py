@@ -17,10 +17,10 @@ class OpenAICompatibleLoader:
     def INPUT_TYPES(cls):
         return {
             "required": {
-                "api_base": ("STRING", {"default": "https://api.openai.com"}),
-                "api_key": ("STRING", {"default": ""}),
-                "prompt": ("STRING", {"multiline": True}),
                 "model": ("STRING", {"default": "gpt-3.5-turbo"}),
+                "api_base": ("STRING", {"default": "https://api.openai.com"}),
+                "api_key": ("PASSWORD", {"default": ""}),
+                "prompt": ("STRING", {"multiline": True}),
                 "temperature": ("FLOAT", {"default": 0.7, "min": 0.0, "max": 2.0}),
                 "max_tokens": ("INT", {"default": 512, "min": 1, "max": 4096}),
             },
