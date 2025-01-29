@@ -28,7 +28,7 @@ NODE_DISPLAY_NAME_MAPPINGS.update(OPENAI_LOADER_DISPLAY_NAMES)
 
 # Define display names for nodes
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "DeepSeekModelLoader": "Loader/Multimodal Loader",
+    "DeepSeekModelLoader": "Multimodal Loader",
     "DeepSeekImageUnderstanding": "DeepSeek Image Understanding",
     "DeepSeekImageGeneration": "DeepSeek Image Generation"
 }
