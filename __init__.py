@@ -17,7 +17,7 @@ NODE_CLASS_MAPPINGS: Dict[str, Any] = {
     **MODEL_LOADER_NODES,
     **IMAGE_UNDERSTANDING_NODES,
     **IMAGE_GENERATION_NODES,
-    **OPENAI_LOADER_NODES
+    **OPENAI_LOADER_NODES,
 }
 
 # Initialize display name mappings
@@ -30,7 +30,8 @@ NODE_DISPLAY_NAME_MAPPINGS.update(OPENAI_LOADER_DISPLAY_NAMES)
 NODE_DISPLAY_NAME_MAPPINGS = {
     "DeepSeekModelLoader": "Multimodal Loader",
     "DeepSeekImageUnderstanding": "DeepSeek Image Understanding",
-    "DeepSeekImageGeneration": "DeepSeek Image Generation"
+    "DeepSeekImageGeneration": "DeepSeek Image Generation",
+    "OpenAICompatibleLoader": "OpenAI Compatible Loader"
 }
 
 __all__ = ['NODE_CLASS_MAPPINGS', 'NODE_DISPLAY_NAME_MAPPINGS']
