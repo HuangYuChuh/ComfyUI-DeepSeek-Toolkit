@@ -25,8 +25,8 @@ class LLM_Loader:
             }
         }
 
-    RETURN_TYPES = ("STRING",)
-    RETURN_NAMES = ("response",)
+    RETURN_TYPES = ("STRING", "STRING")
+    RETURN_NAMES = ("base_url", "model")
     FUNCTION = "generate"
     CATEGORY = "DeepSeek_Toolkit"
 
@@ -65,7 +65,8 @@ class LLM_Loader:
         }
         
         try:
-            return asyncio.run(self.async_generate(payload, base_url))
+            # 返回 base_url 和 model
+            return (base_url, selected_model)
         except Exception as e:
             raise Exception(f"请求失败: {str(e)}")
 

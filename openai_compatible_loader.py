@@ -12,13 +12,14 @@ class OpenAICompatibleLoader:
     """
     Custom node for OpenAI compatible API integration
     """
-    
+
     @classmethod
     def INPUT_TYPES(cls):
         return {
             "required": {
                 "base_url": ("STRING", {"default": "https://api.openai.com"}),
                 "api_key": ("STRING", {"default": ""}),
+                "system_prompt": ("STRING", {"default": "", "multiline": True}),
                 "prompt": ("STRING", {"multiline": True}),
                 "temperature": ("FLOAT", {"default": 0.7, "min": 0.0, "max": 2.0}),
                 "max_tokens": ("INT", {"default": 512, "min": 1, "max": 4096}),
@@ -27,9 +28,6 @@ class OpenAICompatibleLoader:
                     "label": "模型名称",
                     "allow_edit": True
                 }),
-            },
-            "optional": {
-                "context": ("STRING", {"default": ""}),
             }
         }
 
@@ -51,19 +49,22 @@ class OpenAICompatibleLoader:
                 ) as response:
                     response.raise_for_status()
                     data = await response.json()
-                    return data['choices'][0]['message']['content']
+                    print(f"[DEBUG] API Response: {data}")  # 调试日志
+                    response_content = data['choices'][0]['message']['content']
+                    print(f"[DEBUG] Extracted Response Content: {response_content}")  # 调试日志
+                    return [response_content]  # 返回值改为列表形式
         except ClientError as e:
             raise Exception(f"API request failed: {str(e)}")
     
     def generate(self, base_url: str, api_key: str, prompt: str,
                  model: str, temperature: float,
-                 max_tokens: int, context: Optional[str] = None):
+                 max_tokens: int, system_prompt: Optional[str] = None):
         
         messages = []
-        if context:
+        if system_prompt:
             messages.append({
                 "role": "system",
-                "content": context
+                "content": system_prompt
             })
         messages.append({
             "role": "user",
@@ -88,7 +89,7 @@ class OpenAICompatibleLoader:
 
 # 注册节点
 NODE_CLASS_MAPPINGS = {"OpenAICompatibleLoader": OpenAICompatibleLoader}
-NODE_DISPLAY_NAME_MAPPINGS = {"OpenAI Compatible Loader": "OpenAI Compatible Loader"}
+NODE_DISPLAY_NAME_MAPPINGS = {"OpenAICompatibleLoader": "OpenAI Compatible Loader"}
 
 WEB_DIRECTORY = "./web"
 __all__ = ['NODE_CLASS_MAPPINGS', 'NODE_DISPLAY_NAME_MAPPINGS']
