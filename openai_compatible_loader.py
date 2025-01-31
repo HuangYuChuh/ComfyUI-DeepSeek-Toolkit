@@ -28,6 +28,7 @@ class OpenAICompatibleLoader:
                 "prompt": ("STRING", {"multiline": True}),
                 "temperature": ("FLOAT", {"default": 0.7, "min": 0.0, "max": 2.0}),
                 "max_tokens": ("INT", {"default": 512, "min": 1, "max": 4096}),
+                "image": ("IMAGE", {"label": "输入图像"}),
             }
         }
 
@@ -58,7 +59,7 @@ class OpenAICompatibleLoader:
     
     def generate(self, base_url: str, api_key: str, prompt: str,
                  model: str, temperature: float,
-                 max_tokens: int, system_prompt: Optional[str] = None):
+                 max_tokens: int, image: Optional[str] = None, system_prompt: Optional[str] = None):
         
         messages = []
         if system_prompt:
@@ -66,17 +67,74 @@ class OpenAICompatibleLoader:
                 "role": "system",
                 "content": system_prompt
             })
-        messages.append({
-            "role": "user",
-            "content": prompt
-        })
+        # 验证图像数据是否为 Base64 编码
+        import base64
+        try:
+            if image is not None and hasattr(image, "numpy"):
+                # 检查输入类型并转换为 Base64
+                if hasattr(image, "numpy"):  # 检查是否为张量
+                    import numpy as np
+                    image_np = image.numpy()  # 转换为 NumPy 数组
+                    if image_np.size > 1:  # 确保张量不是单值
+                        image = image_np.tobytes()  # 转换为字节流
+                    else:
+                        raise ValueError("图像张量必须包含多值数据")
+                elif isinstance(image, bytes):
+                    # 上传图像到图床并获取 URL
+                    import requests
+                    from io import BytesIO
+
+                    # 使用 Imgur API 上传图像
+                    imgur_client_id = "YOUR_IMGUR_CLIENT_ID"  # 替换为实际的 Imgur Client ID
+                    headers = {"Authorization": f"Client-ID {imgur_client_id}"}
+                    response = requests.post(
+                        "https://api.imgur.com/3/image",
+                        headers=headers,
+                        files={"image": BytesIO(image)}
+                    )
+                    response.raise_for_status()
+                    image_url = response.json()["data"]["link"]
+                    print(f"[DEBUG] Uploaded Image URL: {image_url}")  # 调试日志
+                    image = image_url
+                elif isinstance(image, str):
+                    # 如果已经是 Base64 字符串，则直接使用
+                    pass
+                else:
+                    raise ValueError("图像数据必须是 Base64 字符串或字节流")
+                messages.append({
+                    "role": "user",
+                    "content": [
+                        {"type": "text", "text": prompt},
+                        {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{image}"}}
+                    ]
+                })
+            else:
+                messages.append({
+                    "role": "user",
+                    "content": prompt
+                })
+        except Exception as e:
+            raise ValueError(f"无效的图像数据: {str(e)}")
         
         # 模型选择逻辑
         selected_model = model if model else "default-model"
         print(f"[INFO] 使用模型: {selected_model}")
         
-        # 提取实际的 base_url 部分
-        actual_base_url = base_url.split(" - ")[-1]
+        # 定义 base_url 映射表
+        base_url_mapping = {
+            "Qwen/通义千问": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+            "DeepSeek": "https://api.deepseek.com",
+            "DouBao": "https://api.doubao.com",
+            "Spark": "https://api.spark.com",
+            "GLM": "https://api.glm.com",
+            "Moonshot": "https://api.moonshot.com",
+            "Baichuan": "https://api.baichuan.com",
+            "MiniMax": "https://api.minimax.com",
+            "StepFun": "https://api.stepfun.com"
+        }
+        
+        # 获取实际的 base_url
+        actual_base_url = base_url_mapping.get(base_url, base_url)
         
         payload = {
             "model": selected_model,
@@ -84,6 +142,7 @@ class OpenAICompatibleLoader:
             "temperature": temperature,
             "max_tokens": max_tokens
         }
+        print(f"[DEBUG] Generated Payload: {json.dumps(payload, indent=2)}")  # 调试日志
         
         try:
             return asyncio.run(self.async_generate(payload, actual_base_url, api_key))

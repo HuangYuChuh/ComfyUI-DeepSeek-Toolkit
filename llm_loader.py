@@ -17,15 +17,15 @@ class LLM_Loader:
         return {
             "required": {
                 "base_url": ([
-                    "Qwen - https://dashscope.aliyuncs.com/compatible-mode/v1",
-                    "DeepSeek - https://api.deepseek.com",
-                    "DouBao - https://api.doubao.com",
-                    "Spark - https://api.spark.com",
-                    "GLM - https://api.glm.com",
-                    "Moonshot - https://api.moonshot.com",
-                    "Baichuan - https://api.baichuan.com",
-                    "MiniMax - https://api.minimax.com",
-                    "StepFun - https://api.stepfun.com"
+                    "Qwen/通义千问",
+                    "DeepSeek",
+                    "DouBao",
+                    "Spark",
+                    "GLM",
+                    "Moonshot",
+                    "Baichuan",
+                    "MiniMax",
+                    "StepFun"
                 ], {}),
                 "model": ("STRING", {
                     "default": "",
@@ -39,6 +39,19 @@ class LLM_Loader:
     RETURN_NAMES = ("base_url", "model")
     FUNCTION = "generate"
     CATEGORY = "DeepSeek_Toolkit"
+
+    # 定义 base_url 和模型的映射关系
+    MODEL_MAPPING = {
+        "Qwen/通义千问": ["qwen-turbo", "qwen-plus", "qwen-max"],
+        "DeepSeek": ["deepseek-7b", "deepseek-33b"],
+        "DouBao": ["doubao-lite", "doubao-pro"],
+        "Spark": ["spark-mini", "spark-max"],
+        "GLM": ["glm-130b"],
+        "Moonshot": ["moonshot-v1"],
+        "Baichuan": ["baichuan-7b", "baichuan-13b"],
+        "MiniMax": ["minimax-turbo", "minimax-plus"],
+        "StepFun": ["stepfun-base", "stepfun-large"]
+    }
 
     async def async_generate(self, payload: dict, base_url: str):
         try:
@@ -65,6 +78,22 @@ class LLM_Loader:
             }
         ]
         
+        # 定义 base_url 映射表
+        base_url_mapping = {
+            "Qwen/阿里巴巴": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+            "DeepSeek": "https://api.deepseek.com",
+            "DouBao": "https://api.doubao.com",
+            "Spark": "https://api.spark.com",
+            "GLM": "https://api.glm.com",
+            "Moonshot": "https://api.moonshot.com",
+            "Baichuan": "https://api.baichuan.com",
+            "MiniMax": "https://api.minimax.com",
+            "StepFun": "https://api.stepfun.com"
+        }
+        
+        # 获取实际的 base_url
+        actual_base_url = base_url_mapping.get(base_url, base_url)
+        
         # 使用指定的模型
         selected_model = model if model else "default-model"
         print(f"[INFO] 使用模型: {selected_model}")
@@ -76,7 +105,7 @@ class LLM_Loader:
         
         try:
             # 返回 base_url 和 model
-            return (base_url, selected_model)
+            return (actual_base_url, selected_model)
         except Exception as e:
             raise Exception(f"请求失败: {str(e)}")
 
