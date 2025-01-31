@@ -18,29 +18,29 @@ class OpenAICompatibleLoader:
         return {
             "required": {
                 "base_url": ("STRING", {"default": "https://api.openai.com"}),
-                "api_key": ("STRING", {"default": ""}),
-                "system_prompt": ("STRING", {"default": "", "multiline": True}),
-                "prompt": ("STRING", {"multiline": True}),
-                "temperature": ("FLOAT", {"default": 0.7, "min": 0.0, "max": 2.0}),
-                "max_tokens": ("INT", {"default": 512, "min": 1, "max": 4096}),
                 "model": ("STRING", {
                     "default": "",
                     "label": "模型名称",
                     "allow_edit": True
                 }),
+                "api_key": ("STRING", {"default": ""}),
+                "system_prompt": ("STRING", {"default": "我是一个可以使用LLM构建实用功能的Toolkit", "multiline": True}),
+                "prompt": ("STRING", {"multiline": True}),
+                "temperature": ("FLOAT", {"default": 0.7, "min": 0.0, "max": 2.0}),
+                "max_tokens": ("INT", {"default": 512, "min": 1, "max": 4096}),
             }
         }
 
     RETURN_TYPES = ("STRING",)
-    RETURN_NAMES = ("response",)
+    RETURN_NAMES = ("text",)
     FUNCTION = "generate"
     CATEGORY = "DeepSeek_Toolkit"
 
-    async def async_generate(self, payload: dict, base_url: str, api_key: str):
+    async def async_generate(self, payload: dict, actual_base_url: str, api_key: str):
         try:
             async with ClientSession() as session:
                 async with session.post(
-                    f"{base_url}/chat/completions",
+                    f"{actual_base_url}/chat/completions",
                     headers={
                         "Content-Type": "application/json",
                         "Authorization": f"Bearer {api_key}"
@@ -75,6 +75,9 @@ class OpenAICompatibleLoader:
         selected_model = model if model else "default-model"
         print(f"[INFO] 使用模型: {selected_model}")
         
+        # 提取实际的 base_url 部分
+        actual_base_url = base_url.split(" - ")[-1]
+        
         payload = {
             "model": selected_model,
             "messages": messages,
@@ -83,7 +86,7 @@ class OpenAICompatibleLoader:
         }
         
         try:
-            return asyncio.run(self.async_generate(payload, base_url, api_key))
+            return asyncio.run(self.async_generate(payload, actual_base_url, api_key))
         except Exception as e:
             raise Exception(f"请求失败: {str(e)}")
 

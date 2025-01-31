@@ -16,7 +16,17 @@ class LLM_Loader:
     def INPUT_TYPES(cls):
         return {
             "required": {
-                "base_url": ("STRING", {"default": "https://api.example.com"}),
+                "base_url": ([
+                    "Qwen - https://dashscope.aliyuncs.com/compatible-mode/v1",
+                    "DeepSeek - https://api.deepseek.com",
+                    "DouBao - https://api.doubao.com",
+                    "Spark - https://api.spark.com",
+                    "GLM - https://api.glm.com",
+                    "Moonshot - https://api.moonshot.com",
+                    "Baichuan - https://api.baichuan.com",
+                    "MiniMax - https://api.minimax.com",
+                    "StepFun - https://api.stepfun.com"
+                ], {}),
                 "model": ("STRING", {
                     "default": "",
                     "label": "模型名称",
