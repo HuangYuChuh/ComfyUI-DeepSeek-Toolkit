@@ -17,8 +17,9 @@ class OpenAICompatibleLoader:
     def INPUT_TYPES(cls):
         return {
             "required": {
-                "model": ("STRING", {"default": "gpt-3.5-turbo"}),
-                "api_base": ("STRING", {"default": "https://api.openai.com"}),
+                "auto_detect": ("BOOLEAN", {"default": True, "label": "自动检测模型"}),
+                "model": ("STRING", {"default": "", "label": "手动指定模型(当自动检测失败时)"}),
+                "base_url": ("STRING", {"default": "https://api.openai.com"}),
                 "api_key": ("STRING", {"default": ""}),
                 "prompt": ("STRING", {"multiline": True}),
                 "temperature": ("FLOAT", {"default": 0.7, "min": 0.0, "max": 2.0}),
@@ -34,10 +35,25 @@ class OpenAICompatibleLoader:
     FUNCTION = "generate"
     CATEGORY = "DeepSeek_Toolkit"
 
-    async def async_generate(self, session: ClientSession, payload: dict, api_base: str, api_key: str):
+    async def fetch_models(self, session: ClientSession, base_url: str, api_key: str):
+        try:
+            async with session.get(
+                f"{base_url}/models",
+                headers={
+                    "Content-Type": "application/json",
+                    "Authorization": f"Bearer {api_key}"
+                }
+            ) as response:
+                response.raise_for_status()
+                data = await response.json()
+                return [model['id'] for model in data.get('data', [])]
+        except ClientError as e:
+            raise Exception(f"Failed to fetch models: {str(e)}")
+
+    async def async_generate(self, session: ClientSession, payload: dict, base_url: str, api_key: str):
         try:
             async with session.post(
-                f"{api_base}/chat/completions",
+                f"{base_url}/chat/completions",
                 headers={
                     "Content-Type": "application/json",
                     "Authorization": f"Bearer {api_key}"
@@ -50,21 +66,57 @@ class OpenAICompatibleLoader:
         except ClientError as e:
             raise Exception(f"API request failed: {str(e)}")
 
-    def generate(self, api_base: str, api_key: str, prompt: str, model: str,
+    def generate(self, base_url: str, api_key: str, prompt: str, model: str,
                 temperature: float, max_tokens: int, context: Optional[str] = None):
-        messages = [{
-            "role": "user",
-            "content": prompt
-        }]
+        # 模型检测逻辑
+        async def detect_model():
+            models = await self.fetch_models(session, base_url, api_key)
+            if not models:
+                raise ValueError("无法从API获取模型列表")
+            return models
         
+        # 构建消息体
+        messages = []
         if context:
-            messages.insert(0, {
+            messages.append({
                 "role": "system",
                 "content": context
             })
-
+        messages.append({
+            "role": "user",
+            "content": prompt
+        })
+        
+        # 确定最终使用的模型
+        available_models = []
+        selected_model = model
+        async def run_model_detection():
+            if auto_detect:
+                try:
+                    models = await self.fetch_models(session, base_url, api_key)
+                    if not models:
+                        raise ValueError("无法从API获取模型列表")
+                    return models
+                except Exception as e:
+                    if not model:
+                        raise ValueError(f"自动检测模型失败且未提供手动模型: {str(e)}")
+            return []
+        
+        # 模型检测逻辑
+        available_models = await run_model_detection()
+                if model and model not in available_models:
+                    print(f"警告: 手动指定的模型 '{model}' 不在可用模型列表中")
+                elif not model:
+                    selected_model = available_models[0] if available_models else ""
+            except Exception as e:
+                if not model:
+                    raise ValueError(f"自动检测模型失败且未提供手动模型: {str(e)}")
+        
+        if not selected_model:
+            raise ValueError("无法确定使用的模型，请检查base url或手动指定有效模型")
+        
         payload = {
-            "model": model,
+            "model": selected_model,
             "messages": messages,
             "temperature": temperature,
             "max_tokens": max_tokens
@@ -74,7 +126,10 @@ class OpenAICompatibleLoader:
             # 使用异步请求（需要ComfyUI运行在支持async的环境中）
             async def run_async():
                 async with ClientSession() as session:
-                    return await self.async_generate(session, payload, api_base, api_key)
+                    models = await self.fetch_models(session, base_url, api_key)
+                    if model not in models:
+                        raise ValueError(f"Model '{model}' not found in available models.")
+                    return await self.async_generate(session, payload, base_url, api_key)
 
             import asyncio
             response = asyncio.run(run_async())
@@ -86,7 +141,7 @@ class OpenAICompatibleLoader:
             try:
                 import requests
                 response = requests.post(
-                    f"{api_base}/v1/chat/completions",
+                    f"{base_url}/v1/chat/completions",
                     headers={
                         "Content-Type": "application/json",
                         "Authorization": f"Bearer {api_key}"
