@@ -18,14 +18,14 @@ class LLM_Loader:
             "required": {
                 "base_url": ([
                     "Qwen/通义千问",
-                    "DeepSeek",
-                    "DouBao",
-                    "Spark",
-                    "GLM",
-                    "Moonshot",
-                    "Baichuan",
-                    "MiniMax",
-                    "StepFun"
+                    "DeepSeek/深度求索",
+                    "DouBao/豆包",
+                    "Spark/星火",
+                    "GLM/智谱清言",
+                    "Moonshot/月之暗面",
+                    "Baichuan/百川",
+                    "MiniMax/MiniMax",
+                    "StepFun/阶跃星辰"
                 ], {}),
                 "model": ("STRING", {
                     "default": "",
@@ -43,14 +43,14 @@ class LLM_Loader:
     # 定义 base_url 和模型的映射关系
     MODEL_MAPPING = {
         "Qwen/通义千问": ["qwen-turbo", "qwen-plus", "qwen-max"],
-        "DeepSeek": ["deepseek-7b", "deepseek-33b"],
-        "DouBao": ["doubao-lite", "doubao-pro"],
-        "Spark": ["spark-mini", "spark-max"],
-        "GLM": ["glm-130b"],
-        "Moonshot": ["moonshot-v1"],
-        "Baichuan": ["baichuan-7b", "baichuan-13b"],
-        "MiniMax": ["minimax-turbo", "minimax-plus"],
-        "StepFun": ["stepfun-base", "stepfun-large"]
+        "DeepSeek/深度求索": ["deepseek-7b", "deepseek-33b"],
+        "DouBao/豆包": ["doubao-lite", "doubao-pro"],
+        "Spark/星火": ["spark-mini", "spark-max"],
+        "GLM/智谱清言": ["glm-130b"],
+        "Moonshot/月之暗面": ["moonshot-v1"],
+        "Baichuan/百川": ["baichuan-7b", "baichuan-13b"],
+        "MiniMax/MiniMax": ["minimax-turbo", "minimax-plus"],
+        "StepFun/阶跃星辰": ["stepfun-base", "stepfun-large"]
     }
 
     async def async_generate(self, payload: dict, base_url: str):
@@ -81,14 +81,14 @@ class LLM_Loader:
         # 定义 base_url 映射表
         base_url_mapping = {
             "Qwen/阿里巴巴": "https://dashscope.aliyuncs.com/compatible-mode/v1",
-            "DeepSeek": "https://api.deepseek.com",
-            "DouBao": "https://api.doubao.com",
-            "Spark": "https://api.spark.com",
-            "GLM": "https://api.glm.com",
-            "Moonshot": "https://api.moonshot.com",
-            "Baichuan": "https://api.baichuan.com",
-            "MiniMax": "https://api.minimax.com",
-            "StepFun": "https://api.stepfun.com"
+            "DeepSeek/深度求索": "https://api.deepseek.com/v1",
+            "DouBao/豆包": "https://ark.cn-beijing.volces.com/api/v3",
+            "Spark/星火": "https://spark-api-open.xf-yun.com/v1",
+            "GLM/智谱清言": "https://open.bigmodel.cn/api/paas/v4",
+            "Moonshot/月之暗面": "https://api.moonshot.cn/v1",
+            "Baichuan/百川": "https://api.baichuan-ai.com/v1",
+            "MiniMax/MiniMax": "https://api.minimax.chat/v1",
+            "StepFun/阶跃星辰": "https://api.stepfun.com/v1"
         }
         
         # 获取实际的 base_url

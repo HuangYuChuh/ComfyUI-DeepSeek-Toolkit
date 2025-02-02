@@ -17,7 +17,7 @@ class OpenAICompatibleLoader:
     def INPUT_TYPES(cls):
         return {
             "required": {
-                "base_url": ("STRING", {"default": "https://api.openai.com"}),
+                "base_url": ("STRING", {"default": "DouBao/豆包"}),
                 "model": ("STRING", {
                     "default": "",
                     "label": "模型名称",
@@ -28,7 +28,6 @@ class OpenAICompatibleLoader:
                 "prompt": ("STRING", {"multiline": True}),
                 "temperature": ("FLOAT", {"default": 0.7, "min": 0.0, "max": 2.0}),
                 "max_tokens": ("INT", {"default": 512, "min": 1, "max": 4096}),
-                "image": ("IMAGE", {"label": "输入图像"}),
             }
         }
 
@@ -59,7 +58,7 @@ class OpenAICompatibleLoader:
     
     def generate(self, base_url: str, api_key: str, prompt: str,
                  model: str, temperature: float,
-                 max_tokens: int, image: Optional[str] = None, system_prompt: Optional[str] = None):
+                 max_tokens: int, system_prompt: Optional[str] = None):
         
         messages = []
         if system_prompt:
@@ -67,70 +66,29 @@ class OpenAICompatibleLoader:
                 "role": "system",
                 "content": system_prompt
             })
-        # 验证图像数据是否为 Base64 编码
-        import base64
-        try:
-            if image is not None and hasattr(image, "numpy"):
-                # 检查输入类型并转换为 Base64
-                if hasattr(image, "numpy"):  # 检查是否为张量
-                    import numpy as np
-                    image_np = image.numpy()  # 转换为 NumPy 数组
-                    if image_np.size > 1:  # 确保张量不是单值
-                        image = image_np.tobytes()  # 转换为字节流
-                    else:
-                        raise ValueError("图像张量必须包含多值数据")
-                elif isinstance(image, bytes):
-                    # 上传图像到图床并获取 URL
-                    import requests
-                    from io import BytesIO
-
-                    # 使用 Imgur API 上传图像
-                    imgur_client_id = "YOUR_IMGUR_CLIENT_ID"  # 替换为实际的 Imgur Client ID
-                    headers = {"Authorization": f"Client-ID {imgur_client_id}"}
-                    response = requests.post(
-                        "https://api.imgur.com/3/image",
-                        headers=headers,
-                        files={"image": BytesIO(image)}
-                    )
-                    response.raise_for_status()
-                    image_url = response.json()["data"]["link"]
-                    print(f"[DEBUG] Uploaded Image URL: {image_url}")  # 调试日志
-                    image = image_url
-                elif isinstance(image, str):
-                    # 如果已经是 Base64 字符串，则直接使用
-                    pass
-                else:
-                    raise ValueError("图像数据必须是 Base64 字符串或字节流")
-                messages.append({
-                    "role": "user",
-                    "content": [
-                        {"type": "text", "text": prompt},
-                        {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{image}"}}
-                    ]
-                })
-            else:
-                messages.append({
-                    "role": "user",
-                    "content": prompt
-                })
-        except Exception as e:
-            raise ValueError(f"无效的图像数据: {str(e)}")
+        if prompt.strip():  # 确保 prompt 不为空
+            messages.append({
+                "role": "user",
+                "content": prompt
+            })
+        else:
+            raise ValueError("用户输入的 prompt 不能为空")
         
         # 模型选择逻辑
-        selected_model = model if model else "default-model"
+        selected_model = model if model else "glm-4"  # 默认模型为 glm-4
         print(f"[INFO] 使用模型: {selected_model}")
         
         # 定义 base_url 映射表
         base_url_mapping = {
-            "Qwen/通义千问": "https://dashscope.aliyuncs.com/compatible-mode/v1",
-            "DeepSeek": "https://api.deepseek.com",
-            "DouBao": "https://api.doubao.com",
-            "Spark": "https://api.spark.com",
-            "GLM": "https://api.glm.com",
-            "Moonshot": "https://api.moonshot.com",
-            "Baichuan": "https://api.baichuan.com",
-            "MiniMax": "https://api.minimax.com",
-            "StepFun": "https://api.stepfun.com"
+            "Qwen/阿里巴巴": "https://dashscope.aliyuncs.com/compatible-mode/v1/",
+            "DeepSeek/深度求索": "https://api.deepseek.com/v1/",
+            "DouBao/豆包": "https://ark.cn-beijing.volces.com/api/v3/",
+            "Spark/星火": "https://spark-api-open.xf-yun.com/v1/",
+            "GLM/智谱清言": "https://open.bigmodel.cn/api/paas/v4/",
+            "Moonshot/月之暗面": "https://api.moonshot.cn/v1",
+            "Baichuan/百川": "https://api.baichuan-ai.com/v1/",
+            "MiniMax/MiniMax": "https://api.minimax.chat/v1/",
+            "StepFun/阶跃星辰": "https://api.stepfun.com/v1/"
         }
         
         # 获取实际的 base_url
@@ -149,9 +107,10 @@ class OpenAICompatibleLoader:
         except Exception as e:
             raise Exception(f"请求失败: {str(e)}")
 
+
 # 注册节点
 NODE_CLASS_MAPPINGS = {"OpenAICompatibleLoader": OpenAICompatibleLoader}
-NODE_DISPLAY_NAME_MAPPINGS = {"OpenAICompatibleLoader": "OpenAI Compatible Loader"}
+NODE_DISPLAY_NAME_MAPPINGS = {"OpenAICompatibleLoader": "OpenAI Compatible Adapter"}
 
 WEB_DIRECTORY = "./web"
 __all__ = ['NODE_CLASS_MAPPINGS', 'NODE_DISPLAY_NAME_MAPPINGS']
