@@ -1,6 +1,6 @@
 # ComfyUI-DeepSeek_Toolkit
 
-ComfyUI-DeepSeek_Toolkit 是一个用于 ComfyUI 的深度学习工具包，集成了 DeepSeek Janus 模型，提供了图像生成和图像理解的功能。
+ComfyUI-DeepSeek_Toolkit 是一个用于 ComfyUI 的深度学习工具包，集成了多种 LLM 模型和服务，提供了图像生成、图像理解以及文本生成等功能。
 
 ## 功能特性
 
@@ -8,16 +8,21 @@ ComfyUI-DeepSeek_Toolkit 是一个用于 ComfyUI 的深度学习工具包，集�
   - 支持使用 DeepSeek Janus Pro 模型进行图像生成
   - 可调节的参数包括：batch size、temperature、guidance scale 等
   - 支持正向提示词和负向提示词
+ 
 
 - **图像理解 (Image Understanding)**
   - 基于 DeepSeek Janus 模型的图像理解功能
   - 支持图像问答和描述生成
   - 多模态交互支持
 
+- **文本生成 (Text Generation)**
+  - 集成多个 LLM 服务（如 Moonshot、DeepSeek、Spark 等）
+  - 支持动态选择模型和 API 配置
+
 ## 系统要求
 
 - Python 3.8+
-- PyTorch
+- PyTorch 1.10+（推荐使用 CUDA 支持的版本）
 - ComfyUI
 - 足够的 GPU 内存（默认使用设备内存的 90%，可通过 `max_memory` 参数调整）
 
@@ -33,12 +38,15 @@ ComfyUI-DeepSeek_Toolkit 是一个用于 ComfyUI 的深度学习工具包，集�
    ```bash
    pip install -r requirements.txt
    ```
+4. 配置环境变量（可选）：
+   - 设置 `CUDA_VISIBLE_DEVICES` 以指定 GPU 设备
+   - 设置 `PYTORCH_CUDA_ALLOC_CONF` 以优化内存分配
 
 ## 使用方法
 
 ### 图像生成
 
-1. 在 ComfyUI 工作流中添加 &quot;DeepSeek Image Generation Pro&quot; 节点
+1. 在 ComfyUI 工作流中添加 "DeepSeek Image Generation Pro" 节点
 2. 配置以下参数：
    - Model: DeepSeek 模型实例
    - Tokenizer: DeepSeek tokenizer 实例
@@ -52,12 +60,23 @@ ComfyUI-DeepSeek_Toolkit 是一个用于 ComfyUI 的深度学习工具包，集�
 
 ### 图像理解
 
-1. 在 ComfyUI 工作流中添加 &quot;DeepSeek Image Understanding&quot; 节点
+1. 在 ComfyUI 工作流中添加 "DeepSeek Image Understanding" 节点
 2. 配置以下参数：
    - Model: DeepSeek 模型实例
    - Tokenizer: DeepSeek tokenizer 实例
    - Image: 输入图像
    - Question: 关于图像的问题或描述要求
+
+### 文本生成
+
+1. 在 ComfyUI 工作流中添加 "OpenAI Compatible Adapter" 节点
+2. 配置以下参数：
+   - Base URL: 选择的服务提供商（如 Moonshot、DeepSeek 等）
+   - API Key: 对应服务的 API 密钥
+   - Prompt: 输入的文本提示
+   - Model: 选择的模型名称
+   - Temperature: 采样温度
+   - Max Tokens: 最大生成 token 数量
 
 ## 注意事项
 
