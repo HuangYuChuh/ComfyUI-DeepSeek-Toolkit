@@ -84,7 +84,7 @@ class LLM_Loader:
             "DeepSeek/深度求索": "https://api.deepseek.com/v1",
             "DouBao/豆包": "https://ark.cn-beijing.volces.com/api/v3",
             "Spark/星火": "https://spark-api-open.xf-yun.com/v1",
-            "GLM/智谱清言": "https://open.bigmodel.cn/api/paas/v4",
+            "GLM/智谱清言": "https://open.bigmodel.cn/api/paas/v4/",
             "Moonshot/月之暗面": "https://api.moonshot.cn/v1",
             "Baichuan/百川": "https://api.baichuan-ai.com/v1",
             "MiniMax/MiniMax": "https://api.minimax.chat/v1",

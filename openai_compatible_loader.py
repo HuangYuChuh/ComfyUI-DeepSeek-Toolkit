@@ -6,6 +6,7 @@ import json
 import asyncio
 from aiohttp import ClientSession, ClientError
 from typing import Optional, List, Dict
+import time  # 添加时间模块
 
 
 class OpenAICompatibleLoader:
@@ -103,6 +104,8 @@ class OpenAICompatibleLoader:
         print(f"[DEBUG] Generated Payload: {json.dumps(payload, indent=2)}")  # 调试日志
         
         try:
+            # 添加延迟以避免触发速率限制
+            time.sleep(1)  # 每次请求前等待 1 秒
             return asyncio.run(self.async_generate(payload, actual_base_url, api_key))
         except Exception as e:
             raise Exception(f"请求失败: {str(e)}")
