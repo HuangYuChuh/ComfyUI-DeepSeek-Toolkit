@@ -4,6 +4,7 @@ import nodes
 import aiohttp
 import json
 import asyncio
+from typing import Optional
 from aiohttp import ClientSession, ClientError
 
 

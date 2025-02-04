@@ -7,6 +7,7 @@ import asyncio
 from aiohttp import ClientSession, ClientError
 from typing import Optional, List, Dict
 import time  # 添加时间模块
+import torch
 
 
 class OpenAICompatibleLoader:
@@ -18,7 +19,7 @@ class OpenAICompatibleLoader:
     def INPUT_TYPES(cls):
         return {
             "required": {
-                "base_url": ("STRING", {"default": "Qwen/阿里巴巴"}),
+                "base_url": ("STRING", {"default": "Qwen/通义千问"}),
                 "model": ("STRING", {
                     "default": "",
                     "label": "模型名称",
@@ -59,7 +60,7 @@ class OpenAICompatibleLoader:
     
     def generate(self, base_url: str, api_key: str, prompt: str,
                  model: str, temperature: float,
-                 max_tokens: int, system_prompt: Optional[str] = None):
+                 max_tokens: int, system_prompt: Optional[str] = None, image: Optional[str] = None):
         
         messages = []
         if system_prompt:
@@ -67,10 +68,64 @@ class OpenAICompatibleLoader:
                 "role": "system",
                 "content": system_prompt
             })
-        if prompt.strip():  # 确保 prompt 不为空
+        content = []
+        print(f"[DEBUG] Image parameter type: {type(image)}, value: {image}")
+        if image is not None:
+            # Unified logic for handling both Tensor and string inputs
+            if isinstance(image, torch.Tensor):
+                import base64
+                from PIL import Image
+                import io
+
+                # Convert tensor to PIL image
+                image = image.squeeze(0).cpu().numpy()  # [H, W, C]
+                if image.shape[2] == 1:  # Grayscale image
+                    image = image.squeeze(-1)
+                image = (image * 255).astype('uint8')
+                image = Image.fromarray(image)
+
+                # Convert PIL image to Base64
+                buffered = io.BytesIO()
+                image.save(buffered, format="PNG")
+                img_str = base64.b64encode(buffered.getvalue()).decode("utf-8")
+                image = f"data:image/png;base64,{img_str}"
+
+            # At this point, `image` is guaranteed to be a Base64 string
+            content.append({"type": "image_url", "image_url": {"url": image}})
+
+        elif isinstance(image, str):
+            content.append({"type": "image_url", "image_url": {"url": image}})
+        elif isinstance(image, torch.Tensor):
+                import base64
+                from PIL import Image
+                import io
+
+                # Debug: Print tensor shape and dtype
+                print(f"[DEBUG] Tensor shape: {image.shape}, dtype: {image.dtype}")
+
+                # Convert tensor to PIL image
+                image = image.squeeze(0).cpu().numpy()  # [H, W, C]
+                print(f"[DEBUG] Numpy array shape after squeeze: {image.shape}")
+                if image.shape[2] == 1:  # Grayscale image
+                    image = image.squeeze(-1)
+                    print("[DEBUG] Grayscale image detected, squeezed last dimension")
+                image = (image * 255).astype('uint8')
+                image = Image.fromarray(image)
+
+                # Convert PIL image to Base64
+                buffered = io.BytesIO()
+                image.save(buffered, format="PNG")
+                img_str = base64.b64encode(buffered.getvalue()).decode("utf-8")
+
+                content.append({"type": "image_url", "image_url": {"url": f"data:image/png;base64,{img_str}"}})
+        content.append({"type": "image_url", "image_url": {"url": image}})
+        if prompt.strip():
+            content.append({"type": "text", "text": prompt})
+        
+        if content:
             messages.append({
                 "role": "user",
-                "content": prompt
+                "content": content
             })
         else:
             raise ValueError("用户输入的 prompt 不能为空")
