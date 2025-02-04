@@ -96,28 +96,28 @@ class OpenAICompatibleLoader:
         elif isinstance(image, str):
             content.append({"type": "image_url", "image_url": {"url": image}})
         elif isinstance(image, torch.Tensor):
-                import base64
-                from PIL import Image
-                import io
+            import base64
+            from PIL import Image
+            import io
 
-                # Debug: Print tensor shape and dtype
-                print(f"[DEBUG] Tensor shape: {image.shape}, dtype: {image.dtype}")
+            # Debug: Print tensor shape and dtype
+            print(f"[DEBUG] Tensor shape: {image.shape}, dtype: {image.dtype}")
 
-                # Convert tensor to PIL image
-                image = image.squeeze(0).cpu().numpy()  # [H, W, C]
-                print(f"[DEBUG] Numpy array shape after squeeze: {image.shape}")
-                if image.shape[2] == 1:  # Grayscale image
-                    image = image.squeeze(-1)
-                    print("[DEBUG] Grayscale image detected, squeezed last dimension")
-                image = (image * 255).astype('uint8')
-                image = Image.fromarray(image)
+            # Convert tensor to PIL image
+            image = image.squeeze(0).cpu().numpy()  # [H, W, C]
+            print(f"[DEBUG] Numpy array shape after squeeze: {image.shape}")
+            if image.shape[2] == 1:  # Grayscale image
+                image = image.squeeze(-1)
+                print("[DEBUG] Grayscale image detected, squeezed last dimension")
+            image = (image * 255).astype('uint8')
+            image = Image.fromarray(image)
 
-                # Convert PIL image to Base64
-                buffered = io.BytesIO()
-                image.save(buffered, format="PNG")
-                img_str = base64.b64encode(buffered.getvalue()).decode("utf-8")
+            # Convert PIL image to Base64
+            buffered = io.BytesIO()
+            image.save(buffered, format="PNG")
+            img_str = base64.b64encode(buffered.getvalue()).decode("utf-8")
 
-                content.append({"type": "image_url", "image_url": {"url": f"data:image/png;base64,{img_str}"}})
+            content.append({"type": "image_url", "image_url": {"url": f"data:image/png;base64,{img_str}"}})
         content.append({"type": "image_url", "image_url": {"url": image}})
         if prompt.strip():
             content.append({"type": "text", "text": prompt})
@@ -156,7 +156,7 @@ class OpenAICompatibleLoader:
             "temperature": temperature,
             "max_tokens": max_tokens
         }
-        print(f"[DEBUG] Generated Payload: {json.dumps(payload, indent=2)}")  # 调试日志
+        print(f"[DEBUG] Full Payload Sent to API: {json.dumps(payload, indent=2)}")  # 更详细的调试日志
         
         try:
             # 添加延迟以避免触发速率限制
