@@ -18,7 +18,7 @@ class OpenAICompatibleLoader:
     def INPUT_TYPES(cls):
         return {
             "required": {
-                "base_url": ("STRING", {"default": "DouBao/豆包"}),
+                "base_url": ("STRING", {"default": "Qwen/阿里巴巴"}),
                 "model": ("STRING", {
                     "default": "",
                     "label": "模型名称",
@@ -81,7 +81,7 @@ class OpenAICompatibleLoader:
         
         # 定义 base_url 映射表
         base_url_mapping = {
-            "Qwen/阿里巴巴": "https://dashscope.aliyuncs.com/compatible-mode/v1/",
+            "Qwen/通义千问": "https://dashscope.aliyuncs.com/compatible-mode/v1",
             "DeepSeek/深度求索": "https://api.deepseek.com/v1/",
             "DouBao/豆包": "https://ark.cn-beijing.volces.com/api/v3/",
             "Spark/星火": "https://spark-api-open.xf-yun.com/v1/",
@@ -93,7 +93,7 @@ class OpenAICompatibleLoader:
         }
         
         # 获取实际的 base_url
-        actual_base_url = base_url_mapping.get(base_url, base_url)
+        actual_base_url = base_url_mapping.get(base_url.strip(), base_url)
         
         payload = {
             "model": selected_model,

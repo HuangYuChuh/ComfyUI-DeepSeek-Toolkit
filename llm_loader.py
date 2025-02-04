@@ -80,7 +80,7 @@ class LLM_Loader:
         
         # 定义 base_url 映射表
         base_url_mapping = {
-            "Qwen/阿里巴巴": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+            "Qwen/通义千问": "https://dashscope.aliyuncs.com/compatible-mode/v1",
             "DeepSeek/深度求索": "https://api.deepseek.com/v1",
             "DouBao/豆包": "https://ark.cn-beijing.volces.com/api/v3",
             "Spark/星火": "https://spark-api-open.xf-yun.com/v1",
