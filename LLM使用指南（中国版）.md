@@ -24,7 +24,7 @@
 - **API KEY获取**：https://console.volcengine.com/ark/region:ark+cn-beijing/apiKey?apikey=%7B%7D
 - **价格**：https://www.volcengine.com/docs/82379/1099320
 
-# 3. 深度求索/DeepSeek-V3 
+# 3. DeepSeek-V3/深度求索
 - **官方文档**：https://platform.deepseek.com/api-docs/zh-cn/
 - **可调用模型**：
   - 「deepseek-reasoner」
@@ -33,7 +33,7 @@
 - **API KEY获取**：https://platform.deepseek.com/api_keys
 - **价格**：https://platform.deepseek.com/api-docs/zh-cn/pricing
 ---
-# 4. 科大讯飞/星火
+# 4. spark/星火
 - **官方文档**：https://www.xfyun.cn/doc/spark/Web.html
 - **可调用模型**：（https://www.xfyun.cn/doc/spark/HTTP%E8%B0%83%E7%94%A8%E6%96%87%E6%A1%A3.html#_3-%E8%AF%B7%E6%B1%82%E8%AF%B4%E6%98%8E）
     - **「`Lite`」**：轻量级大语言模型，低延迟，全免费。支持在线联网搜索功能，响应快速、便捷，全面免费开放，适用于低算力推理与模型精调等定制化场景。
@@ -46,7 +46,7 @@
   - 再获取key：https://console.xfyun.cn/services/cbm
 - **价格**：https://xinghuo.xfyun.cn/sparkapi
 
-# 5. 智谱清言/GLM
+# 5. GLM/智谱清言
 - **官方文档**：https://bigmodel.cn/dev/api
 - **可调用模型**：
   - **「GLM-4系列」**：GLM-4 系列提供了复杂推理、超长上下文、极快推理速度等多款模型，适用于多种应用场景。（`glm-4-plus`、`glm-4-air`、`glm-4-air-0111 Preview`、`glm-4-airx`、 `glm-4-long`、`glm-4-flashx`、`glm-4-flash`）
@@ -56,7 +56,7 @@
 - **API KEY获取**：https://bigmodel.cn/usercenter/apikeys
 - **价格**：https://open.bigmodel.cn/pricing
 
-# 6. MiniMax/
+# 6. MiniMax/MiniMax
 - **官方文档**：https://platform.minimaxi.com/document/notice
 - **可调用模型**：
   - 基于MiniMax端到端自研多模态大语言模型，我们为企业用户或企业开发者提供功能丰富的API，适用于大多数文本处理场景。以自然语言交互的形式帮助企业用户或个人开发者提高文本相关的生产效率，例如：文本续写、文案生成、文本扩写、文本改写、内容摘要、代码生成、知识检索等。（ `MiniMax-Text-01`、`abab6.5s-chat`）
@@ -64,7 +64,7 @@
 - **API KEY获取**：https://platform.minimaxi.com/user-center/basic-information/interface-key
 - **价格**：https://platform.minimaxi.com/document/Price?key=66701c7e1d57f38758d5818c
 
-# 7. 月之暗面/Moonshot
+# 7. Moonshot/月之暗面
 - **官方文档**：https://platform.moonshot.cn/docs
 - **可调用模型**：
   - **chat**：（`moonshot-v1-auto`、`moonshot-v1-8k`、`moonshot-v1-32k`、`moonshot-v1-128k`）
@@ -72,3 +72,16 @@
 - **Base url**：https://api.moonshot.cn/v1
 - **API KEY获取**：https://platform.moonshot.cn/console/api-keys
 - **价格**：https://platform.moonshot.cn/docs/price/chat
+
+# 8. Baichuan/百川智能
+- **官方文档**：https://platform.baichuan-ai.com/docs/api
+- **可调用模型**：
+  - Baichuan4-Turbo
+  - Baichuan4-Air
+  - Baichuan4
+  - Baichuan3-Turbo
+  - Baichuan3-Turbo-128k
+  - Baichuan2-Turbo
+- **Base url**：https://api.baichuan-ai.com/v1
+- **API KEY获取**：https://platform.baichuan-ai.com/console/apikey
+- **价格**：https://platform.baichuan-ai.com/price
