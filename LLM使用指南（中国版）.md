@@ -1,7 +1,7 @@
 # 1. Qwen/通义千问
 - 官方文档：https://help.aliyun.com/zh/model-studio/getting-started/what-is-model-studio?spm=a2c4g.11186623.help-menu-2400256.d_0_0.58b91d1cyMbRCF&scm=20140722.H_2579562._.OR_help-T_cn~zh-V_1
 - 可调用模型：（每一个系列下有很多不同权重的模型，模型列表：https://help.aliyun.com/zh/model-studio/getting-started/models?spm=a2c4g.11186623.0.0.3fd248237PxAvQ#9f8890ce29g5u）
-  - 通义千问-Max：通义千问系列效果最好的模型，适合复杂、多步骤的任务。（qwen-max、qwen-max-latest、qwen-max-2025-01-25、qwen-max-2024-09-19、qwen-max-2024-04-28、qwen-max-2024-04-03、qwen-max-2024-01-07）
+  - 通义千问-Max：通义千问系列效果最好的模型，适合复杂、多步骤的任务。（`qwen-max`、`qwen-max-latest`、`qwen-max-2025-01-25`、`qwen-max-2024-09-19`、qwen-max-2024-04-28、qwen-max-2024-04-03、qwen-max-2024-01-07）
   - 通义千问-Plus：能力均衡，推理效果、成本和速度介于通义千问-Max和通义千问-Turbo之间，适合中等复杂任务。（qwen-plus、qwen-plus-latest、qwen-plus-2025-01-12、qwen-plus-2024-12-20、qwen-plus-2024-11-27、qwen-plus-2024-11-25、qwen-plus-2024-09-19、qwen-plus-2024-08-06、qwen-plus-2024-07-23、qwen-plus-2024-06-24、qwen-plus-2024-02-06）
   - 通义千问-Turbo：通义千问系列速度最快、成本极低的模型，适合简单任务。（qwen-turbo、qwen-turbo-latest、qwen-turbo-2024-11-01、qwen-turbo-2024-09-19、qwen-turbo-2024-06-24、qwen-turbo-2024-02-06）
   - Qwen-Long：通义千问系列上下文窗口最长，能力均衡且成本较低的模型，适合长文本分析、信息抽取、总结摘要和分类打标等任务。（qwen-long）
