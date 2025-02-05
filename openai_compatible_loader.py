@@ -30,6 +30,7 @@ class OpenAICompatibleLoader:
                 "prompt": ("STRING", {"multiline": True}),
                 "temperature": ("FLOAT", {"default": 0.7, "min": 0.0, "max": 2.0}),
                 "max_tokens": ("INT", {"default": 512, "min": 1, "max": 4096}),
+                "image": ("IMAGE", {}),
             }
         }
 
@@ -103,18 +104,28 @@ class OpenAICompatibleLoader:
             # Debug: Print tensor shape and dtype
             print(f"[DEBUG] Tensor shape: {image.shape}, dtype: {image.dtype}")
 
-            # Convert tensor to PIL image
-            image = image.squeeze(0).cpu().numpy()  # [H, W, C]
-            print(f"[DEBUG] Numpy array shape after squeeze: {image.shape}")
-            if image.shape[2] == 1:  # Grayscale image
-                image = image.squeeze(-1)
+            # Ensure the tensor is in the correct format [C, H, W]
+            if image.ndim == 4 and image.shape[0] == 1:  # Batch of 1
+                image = image.squeeze(0)  # Remove batch dimension
+            elif image.ndim != 3:
+                raise ValueError("Image tensor must have 3 dimensions [C, H, W] or 4 dimensions [B, C, H, W] with B=1.")
+            
+            # Convert tensor to numpy array [H, W, C]
+            image_np = image.permute(1, 2, 0).cpu().numpy()
+            print(f"[DEBUG] Numpy array shape after permute: {image_np.shape}")
+            
+            # Handle grayscale images
+            if image_np.shape[2] == 1:  # Grayscale image
+                image_np = image_np.squeeze(-1)
                 print("[DEBUG] Grayscale image detected, squeezed last dimension")
-            image = (image * 255).astype('uint8')
-            image = Image.fromarray(image)
+            
+            # Convert to uint8
+            image_np = (image_np * 255).astype('uint8')
+            image_pil = Image.fromarray(image_np)
 
             # Convert PIL image to Base64
             buffered = io.BytesIO()
-            image.save(buffered, format="PNG")
+            image_pil.save(buffered, format="PNG")
             img_str = base64.b64encode(buffered.getvalue()).decode("utf-8")
 
             content.append({"type": "image_url", "image_url": {"url": f"data:image/png;base64,{img_str}"}})
