@@ -45,3 +45,13 @@
   - 先创建应用：https://console.xfyun.cn/app/myapp
   - 再获取key：https://console.xfyun.cn/services/cbm
 - **价格**：https://xinghuo.xfyun.cn/sparkapi
+---
+# 5. 智谱清言/GLM
+- **官方文档**：https://bigmodel.cn/dev/api
+- **可调用模型**：
+  - **GLM-4系列**：GLM-4 系列提供了复杂推理、超长上下文、极快推理速度等多款模型，适用于多种应用场景。（`glm-4-plus`、`glm-4-air`、`glm-4-air-0111 Preview`、`glm-4-airx`、 `glm-4-long`、`glm-4-flashx`、`glm-4-flash`）
+  - **GLM-4V系列**：GLM-4 系列提供了多图理解、视频理解、单图理解度等多款模型，适用于多种应用场景。（`glm-4v-plus-0111beta`、`glm-4v-plus`、`glm-4v`、`glm-4v-flash`）
+  - **GLM-Zero-Preview**：GLM-Zero-Preview具备强大的复杂推理能力，在逻辑推理、数学、编程等领域表现优异。最大上下文长度为16K。(`glm-zero-preview`)
+- **Base url**：https://open.bigmodel.cn/api/paas/v4 
+- **API KEY获取**：https://bigmodel.cn/usercenter/apikeys
+- **价格**：https://open.bigmodel.cn/pricing
