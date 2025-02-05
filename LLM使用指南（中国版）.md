@@ -10,3 +10,16 @@
 - **Base url**：https://dashscope.aliyuncs.com/compatible-mode/v1
 - **API KEY获取**：https://bailian.console.aliyun.com/?apiKey=1#/api-key
 - **价格**：https://help.aliyun.com/zh/model-studio/getting-started/models?spm=a2c4g.11186623.0.0.28722918BtgtOs#cf6cc4aa2aokf
+---
+2. DouBao/豆包
+- **官方文档**：https://www.volcengine.com/docs/82379
+- **可调用模型**：
+  - **Doubao-1.5-pro**：最新一代专业版大模型，单价不提升的同时，模型能力有大幅提升，在知识（MMLU_PRO：80.2； GPQA：66.2）、代码（FullStackBench：65.1）、推理（DROP：92.6）、中文（C-Eval：91.5）等相关的多项测评中获得高分，达到行业SOTA水平。（Doubao-1.5-pro-32k、Doubao-1.5-pro-256k）
+  - **Doubao-1.5-lite**：最新一代轻量版大模型，单价不提升的同时，模型能力有大幅提升，模型效果比肩专业版模型Doubao-pro-32k-0828，您享受轻量版模型的成本和性能，获得过去专业版模型的效果。（Doubao-1.5-lite-32k）
+  - **Doubao-1.5-vision**：最新一代视觉理解模型，在单价不提升的同时，在多模态数据合成、动态分辨率、多模态对齐、混合训练上进行了全面的技术升级，进一步增强了模型在视觉推理、文字文档识别、细粒度信息理解、指令遵循方面的能力，并让模型的回复模式变得更加精简、友好。（Doubao-1.5-vision-pro-32k）
+  - **Doubao-pro**：行业领先的专业版大模型，在参考问答、摘要总结、创作等广泛的应用场景上能提供优质的回答，是同时具备高质量与低成本的极具性价比模型。（Doubao-pro-4k、Doubao-pro-32k、Doubao-pro-128k、Doubao-pro-256k）
+  - **Doubao-lite**：轻量级大模型，具备极致的响应速度，适用于对时延有更高要求的场景，模型配合精调使用可以获得更优质的效果。（Doubao-lite-4k、Doubao-lite-32k、Doubao-lite-128k）
+- **备注**：豆包不是直接填写Model名称进行调用，而是通过推理点ID进行调用，推理点获取地址：https://console.volcengine.com/ark/region:ark+cn-beijing/endpoint?config=%7B%7D 
+- **Base url**：https://ark.cn-beijing.volces.com/api/v3
+- **API KEY获取**：https://console.volcengine.com/ark/region:ark+cn-beijing/apiKey?apikey=%7B%7D
+- **价格**：https://www.volcengine.com/docs/82379/1099320
