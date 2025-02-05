@@ -1,6 +1,6 @@
 # ComfyUI-DeepSeek_Toolkit
 
-ComfyUI-DeepSeek_Toolkit 是一个用于 ComfyUI 的深度学习工具包，集成了多种 LLM 模型和服务，提供了图像生成、图像理解以及文本生成等功能。
+ComfyUI-DeepSeek_Toolkit是受到 DeepSeek 大模型爆发而来的灵感，既然如 DeepSeek 和 Qwen 这些国产大模型效果如此惊艳，为什么不能让更多人用最轻便的设备就能调用顶尖大模型。这个工具包没有复杂的架构，它只做两件事：把 DeepSeek、Qwen 等这些让我兴奋的大语言模型真正融进工作流，同时用 API 化的方式让每一台老旧的 MacBook/Windows 笔记本都能流畅运行。
 
 ## 功能特性
 
