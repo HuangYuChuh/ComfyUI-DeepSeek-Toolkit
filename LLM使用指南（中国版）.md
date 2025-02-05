@@ -10,7 +10,7 @@
 - **Base url**：https://dashscope.aliyuncs.com/compatible-mode/v1
 - **API KEY获取**：https://bailian.console.aliyun.com/?apiKey=1#/api-key
 - **价格**：https://help.aliyun.com/zh/model-studio/getting-started/models?spm=a2c4g.11186623.0.0.28722918BtgtOs#cf6cc4aa2aokf
----
+
 # 2. DouBao/豆包
 - **官方文档**：https://www.volcengine.com/docs/82379
 - **可调用模型**：
@@ -23,7 +23,7 @@
 - **Base url**：https://ark.cn-beijing.volces.com/api/v3
 - **API KEY获取**：https://console.volcengine.com/ark/region:ark+cn-beijing/apiKey?apikey=%7B%7D
 - **价格**：https://www.volcengine.com/docs/82379/1099320
----
+
 # 3. 深度求索/DeepSeek-V3 
 - **官方文档**：https://platform.deepseek.com/api-docs/zh-cn/
 - **可调用模型**：
@@ -45,7 +45,7 @@
   - 先创建应用：https://console.xfyun.cn/app/myapp
   - 再获取key：https://console.xfyun.cn/services/cbm
 - **价格**：https://xinghuo.xfyun.cn/sparkapi
----
+
 # 5. 智谱清言/GLM
 - **官方文档**：https://bigmodel.cn/dev/api
 - **可调用模型**：
@@ -55,3 +55,11 @@
 - **Base url**：https://open.bigmodel.cn/api/paas/v4 
 - **API KEY获取**：https://bigmodel.cn/usercenter/apikeys
 - **价格**：https://open.bigmodel.cn/pricing
+
+# 6. MiniMax/
+- **官方文档**：https://platform.minimaxi.com/document/notice
+- **可调用模型**：
+  - 基于MiniMax端到端自研多模态大语言模型，我们为企业用户或企业开发者提供功能丰富的API，适用于大多数文本处理场景。以自然语言交互的形式帮助企业用户或个人开发者提高文本相关的生产效率，例如：文本续写、文案生成、文本扩写、文本改写、内容摘要、代码生成、知识检索等。（ `MiniMax-Text-01`、`abab6.5s-chat`）
+- **Base url**：https://api.minimax.chat/v1
+- **API KEY获取**：https://platform.minimaxi.com/user-center/basic-information/interface-key
+- **价格**：https://platform.minimaxi.com/document/Price?key=66701c7e1d57f38758d5818c
