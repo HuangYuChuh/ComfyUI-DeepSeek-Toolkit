@@ -10,6 +10,12 @@
 - **Base url**：https://dashscope.aliyuncs.com/compatible-mode/v1
 - **API KEY获取**：https://bailian.console.aliyun.com/?apiKey=1#/api-key
 - **价格**：https://help.aliyun.com/zh/model-studio/getting-started/models?spm=a2c4g.11186623.0.0.28722918BtgtOs#cf6cc4aa2aokf
+  | 模型名称       | 特点                                      | API调用模型名（稳定版本） | 最大上下文长度（Token数） | 最低输入价格（每千Token） | 最低输出价格（每千Token） |
+|----------------|-------------------------------------------|---------------------------|---------------------------|---------------------------|---------------------------|
+| **通义千问-Max** | 适合复杂任务，推理能力最强                | `qwen-max`                | 32,768                    | 0.0112元                  | 0.0448元                  |
+| **通义千问-Plus**| 效果、速度、成本均衡                      | `qwen-plus`               | 131,072                   | 0.0008元                  | 0.002元                   |
+| **通义千问-Turbo**| 适合简单任务，速度快、成本极低            | `qwen-turbo`              | 1,000,000                 | 0.0003元                  | 0.0006元                  |
+| **通义千问-Long**| 适合大规模文本分析，效果与速度均衡、成本较低 | `qwen-long`               | 10,000,000                | 0.0005元                  | 0.002元                   |
 ---
 # 2. DouBao/豆包
 - **官方文档**：https://www.volcengine.com/docs/82379
