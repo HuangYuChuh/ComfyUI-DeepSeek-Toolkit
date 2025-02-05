@@ -63,3 +63,12 @@
 - **Base url**：https://api.minimax.chat/v1
 - **API KEY获取**：https://platform.minimaxi.com/user-center/basic-information/interface-key
 - **价格**：https://platform.minimaxi.com/document/Price?key=66701c7e1d57f38758d5818c
+
+# 7. 月之暗面/Moonshot
+- **官方文档**：https://platform.moonshot.cn/docs
+- **可调用模型**：
+  - **chat**：（`moonshot-v1-auto`、`moonshot-v1-8k`、`moonshot-v1-32k`、`moonshot-v1-128k`）
+  - **vision**：能够理解图片内容，包括图片文字、图片颜色和物体形状等内容。（`moonshot-v1-8k-vision-preview`、`moonshot-v1-32k-vision-preview`、`moonshot-v1-128k-vision-preview`）
+- **Base url**：https://api.moonshot.cn/v1
+- **API KEY获取**：https://platform.moonshot.cn/console/api-keys
+- **价格**：https://platform.moonshot.cn/docs/price/chat
