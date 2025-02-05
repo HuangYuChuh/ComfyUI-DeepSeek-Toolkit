@@ -26,11 +26,13 @@ class OpenAICompatibleLoader:
                     "allow_edit": True
                 }),
                 "api_key": ("STRING", {"default": ""}),
+                },
+            "optional": {
+                "image": ("IMAGE", {"default": None}),
                 "system_prompt": ("STRING", {"default": "我是一个可以使用LLM构建实用功能的Toolkit", "multiline": True}),
                 "prompt": ("STRING", {"multiline": True}),
                 "temperature": ("FLOAT", {"default": 0.7, "min": 0.0, "max": 2.0}),
                 "max_tokens": ("INT", {"default": 512, "min": 1, "max": 4096}),
-                "image": ("IMAGE", {}),
             }
         }
 
@@ -62,15 +64,6 @@ class OpenAICompatibleLoader:
     def generate(self, base_url: str, api_key: str, prompt: str,
                  model: str, temperature: float,
                  max_tokens: int, system_prompt: Optional[str] = None, image: Optional[str] = None):
-        
-        messages = []
-        if system_prompt:
-            messages.append({
-                "role": "system",
-                "content": system_prompt
-            })
-        content = []
-        print(f"[DEBUG] Image parameter type: {type(image)}, value: {image}")
         if image is not None:
             # Unified logic for handling both Tensor and string inputs
             if isinstance(image, torch.Tensor):
@@ -92,48 +85,46 @@ class OpenAICompatibleLoader:
                 image = f"data:image/png;base64,{img_str}"
 
             # At this point, `image` is guaranteed to be a Base64 string
+            if image is not None:
+                content.append({"type": "image_url", "image_url": {"url": image}})
+        # Initialize messages list
+        messages = []
+        if system_prompt:
+            messages.append({
+                "role": "system",
+                "content": system_prompt
+            })
+        content = []
+        print(f"[DEBUG] Image parameter type: {type(image)}, value: {image}")
+        if image is not None:
+            # Check if image is Tensor and convert to Base64
+            if isinstance(image, torch.Tensor):
+                import base64
+                from PIL import Image
+                import io
+                
+                # Convert tensor to PIL image
+                image = image.squeeze(0).cpu().numpy()  # [H, W, C]
+                if image.shape[2] == 1:  # Grayscale image
+                    image = image.squeeze(-1)
+                image = (image * 255).astype('uint8')
+                image = Image.fromarray(image)
+
+                # Convert PIL image to Base64
+                buffered = io.BytesIO()
+                image.save(buffered, format="PNG")
+                img_str = base64.b64encode(buffered.getvalue()).decode("utf-8")
+                image = f"data:image/png;base64,{img_str}"
+            
+            # Add image to content only if it's not None
             content.append({"type": "image_url", "image_url": {"url": image}})
 
-        elif isinstance(image, str):
+        if image is not None:
             content.append({"type": "image_url", "image_url": {"url": image}})
-        elif isinstance(image, torch.Tensor):
-            import base64
-            from PIL import Image
-            import io
-
-            # Debug: Print tensor shape and dtype
-            print(f"[DEBUG] Tensor shape: {image.shape}, dtype: {image.dtype}")
-
-            # Ensure the tensor is in the correct format [C, H, W]
-            if image.ndim == 4 and image.shape[0] == 1:  # Batch of 1
-                image = image.squeeze(0)  # Remove batch dimension
-            elif image.ndim != 3:
-                raise ValueError("Image tensor must have 3 dimensions [C, H, W] or 4 dimensions [B, C, H, W] with B=1.")
-            
-            # Convert tensor to numpy array [H, W, C]
-            image_np = image.permute(1, 2, 0).cpu().numpy()
-            print(f"[DEBUG] Numpy array shape after permute: {image_np.shape}")
-            
-            # Handle grayscale images
-            if image_np.shape[2] == 1:  # Grayscale image
-                image_np = image_np.squeeze(-1)
-                print("[DEBUG] Grayscale image detected, squeezed last dimension")
-            
-            # Convert to uint8
-            image_np = (image_np * 255).astype('uint8')
-            image_pil = Image.fromarray(image_np)
-
-            # Convert PIL image to Base64
-            buffered = io.BytesIO()
-            image_pil.save(buffered, format="PNG")
-            img_str = base64.b64encode(buffered.getvalue()).decode("utf-8")
-
-            content.append({"type": "image_url", "image_url": {"url": f"data:image/png;base64,{img_str}"}})
-        content.append({"type": "image_url", "image_url": {"url": image}})
         if prompt.strip():
             content.append({"type": "text", "text": prompt})
         
-        if content:
+        if content or prompt.strip():
             messages.append({
                 "role": "user",
                 "content": content
