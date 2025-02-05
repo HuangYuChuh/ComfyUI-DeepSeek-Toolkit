@@ -85,3 +85,19 @@
 - **Base url**：https://api.baichuan-ai.com/v1
 - **API KEY获取**：https://platform.baichuan-ai.com/console/apikey
 - **价格**：https://platform.baichuan-ai.com/price
+
+# 9. 阶跃星辰
+- **官方文档**：https://platform.stepfun.com/docs/overview/concept
+- **模型**：
+  - **「chat」**：
+    - step-1（`step-1-8k`、`step-1-32k`、`step-1-128k`、`step-1-256k`）：step-1系列千亿参数经典架构大模型，能够处理各种复杂的语言任务。无论是文本创作、跨语种交流，还是解答问题、逻辑推理等，它都能提高使用者工作效率。此外，该系列模型还具备出色的数学和代码能力，在科学计算、程序开发等领域也能发挥重要作用。
+    - `step-1-flash`（注：模型上下文为8k）：step-1系列极速版大模型，能够处理通用领域的任务。在首字延迟和输出速度上表现优异，为高性价比模型。上下文长度为8k，模型名为step-1-flash。
+    - step-2（`step-2-16k`、`step-2-16k-exp`）：新一代MoE架构大模型，参数规模突破万亿。模型性能/体感/planning能力全面逼近国际主流大模型，满足用户在中/英文领域各种需求，体现了Scaling Laws最前沿的成果。
+    - `step-2-mini`（注：模型上下文为8k）：基于新一代自研Attention架构MFA的极速大模型，用极低成本达到和step1类似的效果，同时保持了更高的吞吐和更快响应时延。能够处理通用任务，在代码能力上具备特长，上下文长度为8k。
+    - `step-2-16k-exp`：step-2模型的实验版本，包含最新的特性，滚动更新中。不推荐在正式生产环境使用。
+  - **「vision」**：
+    - `step-1v`：该模型拥有强大的图像理解能力，暂时只开放文本和图像输入，且仅支持文本生成。上下文长度分别为8k和32k。
+    - `step-1o-vision-32k`：该模型拥有强大的图像理解能力，暂时只开放文本和图像输入，且仅支持文本生成。上下文长度为 32k。相比于 step-1v 系列模型，拥有更强的视觉性能。
+    - `step-1.5v-mini`：该模型拥有强大的视频理解能力，暂时只开放文本、图像和视频输入，且仅支持文本生成。上下文长度为 32k。
+- **Base url**：https://api.stepfun.com/v1
+- **价格**：https://platform.stepfun.com/docs/pricing/intro
