@@ -1,0 +1,12 @@
+# 1. Qwen/通义千问
+- 官方文档：https://help.aliyun.com/zh/model-studio/getting-started/what-is-model-studio?spm=a2c4g.11186623.help-menu-2400256.d_0_0.58b91d1cyMbRCF&scm=20140722.H_2579562._.OR_help-T_cn~zh-V_1
+- 可调用模型：（每一个系列下有很多不同权重的模型，模型列表：https://help.aliyun.com/zh/model-studio/getting-started/models?spm=a2c4g.11186623.0.0.3fd248237PxAvQ#9f8890ce29g5u）
+  - 通义千问-Max：通义千问系列效果最好的模型，适合复杂、多步骤的任务。（qwen-max、qwen-max-latest、qwen-max-2025-01-25、qwen-max-2024-09-19、qwen-max-2024-04-28、qwen-max-2024-04-03、qwen-max-2024-01-07）
+  - 通义千问-Plus：能力均衡，推理效果、成本和速度介于通义千问-Max和通义千问-Turbo之间，适合中等复杂任务。（qwen-plus、qwen-plus-latest、qwen-plus-2025-01-12、qwen-plus-2024-12-20、qwen-plus-2024-11-27、qwen-plus-2024-11-25、qwen-plus-2024-09-19、qwen-plus-2024-08-06、qwen-plus-2024-07-23、qwen-plus-2024-06-24、qwen-plus-2024-02-06）
+  - 通义千问-Turbo：通义千问系列速度最快、成本极低的模型，适合简单任务。（qwen-turbo、qwen-turbo-latest、qwen-turbo-2024-11-01、qwen-turbo-2024-09-19、qwen-turbo-2024-06-24、qwen-turbo-2024-02-06）
+  - Qwen-Long：通义千问系列上下文窗口最长，能力均衡且成本较低的模型，适合长文本分析、信息抽取、总结摘要和分类打标等任务。（qwen-long）
+  - 通义千问 VL：通义千问VL是具有视觉（图像）理解能力的文本生成模型，不仅能进行OCR（图片文字识别），还能进一步总结和推理，例如从商品照片中提取属性，根据习题图进行解题等。（qwen-vl-max、qwen-vl-max-latest、qwen-vl-max-2024-12-30、qwen-vl-max-2024-11-19、qwen-vl-max-2024-10-30、qwen-vl-max-2024-08-09、qwen-vl-max-2024-02-01、qwen-vl-plus、qwen-vl-plus-latest、qwen-vl-plus-2025-01-02、qwen-vl-plus-2024-08-09、qwen-vl-plus-2023-12-01）
+  - 通义千问 OCR：通义千问OCR模型是专用于文字提取的模型。相较于通义千问VL模型，它更专注于文档、表格、试题、手写体文字等类型图像的文字提取能力。它能够识别多种语言，包括英语、法语、日语、韩语、德语、俄语和意大利语等。（qwen-vl-ocr、qwen-vl-ocr-latest、qwen-vl-ocr-2024-10-28）
+- Base url：https://dashscope.aliyuncs.com/compatible-mode/v1
+- API KEY获取：https://bailian.console.aliyun.com/?apiKey=1#/api-key
+- 价格：https://help.aliyun.com/zh/model-studio/getting-started/models?spm=a2c4g.11186623.0.0.28722918BtgtOs#cf6cc4aa2aokf
