@@ -23,3 +23,12 @@
 - **Base url**：https://ark.cn-beijing.volces.com/api/v3
 - **API KEY获取**：https://console.volcengine.com/ark/region:ark+cn-beijing/apiKey?apikey=%7B%7D
 - **价格**：https://www.volcengine.com/docs/82379/1099320
+---
+# 3. 深度求索/DeepSeek-V3 
+- **官方文档**：https://platform.deepseek.com/api-docs/zh-cn/
+- **可调用模型**：
+  - deepseek-reasoner
+  - deepseek-chat
+- **Base url**：https://api.deepseek.com/v1
+- **API KEY获取**：https://platform.deepseek.com/api_keys
+- **价格**：https://platform.deepseek.com/api-docs/zh-cn/pricing
