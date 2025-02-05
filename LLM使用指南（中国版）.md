@@ -11,7 +11,7 @@
 - **API KEY获取**：https://bailian.console.aliyun.com/?apiKey=1#/api-key
 - **价格**：https://help.aliyun.com/zh/model-studio/getting-started/models?spm=a2c4g.11186623.0.0.28722918BtgtOs#cf6cc4aa2aokf
 ---
-2. DouBao/豆包
+# 2. DouBao/豆包
 - **官方文档**：https://www.volcengine.com/docs/82379
 - **可调用模型**：
   - **Doubao-1.5-pro**：最新一代专业版大模型，单价不提升的同时，模型能力有大幅提升，在知识（MMLU_PRO：80.2； GPQA：66.2）、代码（FullStackBench：65.1）、推理（DROP：92.6）、中文（C-Eval：91.5）等相关的多项测评中获得高分，达到行业SOTA水平。（Doubao-1.5-pro-32k、Doubao-1.5-pro-256k）
