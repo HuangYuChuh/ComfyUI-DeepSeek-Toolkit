@@ -32,3 +32,16 @@
 - **Base url**：https://api.deepseek.com/v1
 - **API KEY获取**：https://platform.deepseek.com/api_keys
 - **价格**：https://platform.deepseek.com/api-docs/zh-cn/pricing
+---
+# 4. 科大讯飞/星火
+- **官方文档**：https://www.xfyun.cn/doc/spark/Web.html
+- **可调用模型**：（https://www.xfyun.cn/doc/spark/HTTP%E8%B0%83%E7%94%A8%E6%96%87%E6%A1%A3.html#_3-%E8%AF%B7%E6%B1%82%E8%AF%B4%E6%98%8E）
+  - **`Lite`**：轻量级大语言模型，低延迟，全免费。支持在线联网搜索功能，响应快速、便捷，全面免费开放，适用于低算力推理与模型精调等定制化场景。
+  - **`pro-128k`**：专业级大语言模型，兼顾模型效果与性能。数学、代码、医疗、教育等场景专项优化，支持联网搜索、天气、日期等多个内置插件，覆盖大部分知识问答、语言理解、文本创作等多个场景。
+  - **`max-32k`**：最全面的星火大模型版本，功能丰富。基于最新版星火大模型引擎4.0 Turbo 量化而来，支持联网搜索、天气、日期等多个内置插件，核心能力全面升级，各场景应用效果普遍提升，支持System角色人设与FunctionCall函数调用。
+  - **`4.0Ultra`**：最强大的星火大模型版本，效果极佳。升级为最新版星火大模型引擎：星火4.0 Turbo，全方位提升效果，引领智能巅峰，优化联网搜索链路，提供精准回答，强化文本总结能力，提升办公生产力
+- **Base url**：https://spark-api-open.xf-yun.com/v1
+- **API KEY获取**：
+  - 先创建应用：https://console.xfyun.cn/app/myapp
+  - 再获取key：https://console.xfyun.cn/services/cbm
+- **价格**：https://xinghuo.xfyun.cn/sparkapi
