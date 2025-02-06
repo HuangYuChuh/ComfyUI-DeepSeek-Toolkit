@@ -70,7 +70,7 @@ class LLM_Loader:
         except ClientError as e:
             raise Exception(f"API request failed: {str(e)}")
     
-    def generate(self, base_url: str, model: str):
+    async def generate(self, base_url: str, model: str):
         # 构建默认的提示消息
         messages = [
             {
@@ -105,10 +105,22 @@ class LLM_Loader:
         }
         
         try:
-            # 返回 base_url 和 model
+            result = await self.async_generate(payload, actual_base_url)
+            print(f"[INFO] API 响应: {result}")
             return (actual_base_url, selected_model)
         except Exception as e:
             raise Exception(f"请求失败: {str(e)}")
+
+import atexit
+import asyncio
+
+async def close_aiohttp_session():
+    tasks = [t for t in asyncio.all_tasks() if t is not asyncio.current_task()]
+    for task in tasks:
+        task.cancel()
+    await asyncio.gather(*tasks, return_exceptions=True)
+
+atexit.register(lambda: asyncio.run(close_aiohttp_session()))
 
 # 注册节点
 NODE_CLASS_MAPPINGS = {"LLM_Loader": LLM_Loader}
