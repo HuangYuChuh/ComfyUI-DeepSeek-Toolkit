@@ -1,7 +1,4 @@
 # <center> ComfyUI-DeepSeek_Toolkit </center>
-<div style="text-align: center;">
-这是一段居中的文本
-</div>
 
 ComfyUI-DeepSeek_Toolkit是受到 DeepSeek 大模型爆发而来的灵感，既然如 DeepSeek 和 Qwen 这些国产大模型效果如此惊艳，为什么不能让更多人用最轻便的设备就能调用顶尖大模型。这个工具包没有复杂的架构，它只做两件事：把 DeepSeek、Qwen 等这些让我兴奋的大语言模型真正融进工作流，同时用 API 化的方式让每一台老旧的 MacBook/Windows 笔记本都能流畅运行。
 或许有天某个刚入行的开发者，能用它在一台五年前的笔记本上实现原本需要服务器集群才能完成的事，那这个项目才算真正完成了使命。
