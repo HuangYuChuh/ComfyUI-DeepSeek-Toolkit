@@ -54,31 +54,7 @@ class LLM_Loader:
         "StepFun/阶跃星辰": ["stepfun-base", "stepfun-large"]
     }
 
-    async def async_generate(self, payload: dict, base_url: str):
-        try:
-            async with ClientSession() as session:
-                async with session.post(
-                    f"{base_url}/chat/completions",
-                    headers={
-                        "Content-Type": "application/json"
-                    },
-                    json=payload
-                ) as response:
-                    response.raise_for_status()
-                    data = await response.json()
-                    return data['choices'][0]['message']['content']
-        except ClientError as e:
-            raise Exception(f"API request failed: {str(e)}")
-    
-    async def generate(self, base_url: str, model: str):
-        # 构建默认的提示消息
-        messages = [
-            {
-                "role": "user",
-                "content": "Hello, how are you?"
-            }
-        ]
-        
+    def generate(self, base_url: str, model: str):
         # 定义 base_url 映射表
         base_url_mapping = {
             "Qwen/通义千问": "https://dashscope.aliyuncs.com/compatible-mode/v1",
@@ -95,32 +71,8 @@ class LLM_Loader:
         # 获取实际的 base_url
         actual_base_url = base_url_mapping.get(base_url, base_url)
         
-        # 使用指定的模型
-        selected_model = model if model else "default-model"
-        print(f"[INFO] 使用模型: {selected_model}")
-        
-        payload = {
-            "model": selected_model,
-            "messages": messages
-        }
-        
-        try:
-            result = await self.async_generate(payload, actual_base_url)
-            print(f"[INFO] API 响应: {result}")
-            return (actual_base_url, selected_model)
-        except Exception as e:
-            raise Exception(f"请求失败: {str(e)}")
-
-import atexit
-import asyncio
-
-async def close_aiohttp_session():
-    tasks = [t for t in asyncio.all_tasks() if t is not asyncio.current_task()]
-    for task in tasks:
-        task.cancel()
-    await asyncio.gather(*tasks, return_exceptions=True)
-
-atexit.register(lambda: asyncio.run(close_aiohttp_session()))
+        # 返回 base_url 和 model 参数
+        return (actual_base_url, model)
 
 # 注册节点
 NODE_CLASS_MAPPINGS = {"LLM_Loader": LLM_Loader}
