@@ -36,8 +36,8 @@ class OpenAICompatibleLoader:
             }
         }
 
-    RETURN_TYPES = ("STRING",)
-    RETURN_NAMES = ("text",)
+    RETURN_TYPES = ("STRING", "INT", "INT")
+    RETURN_NAMES = ("text", "input_tokens", "output_tokens")
     FUNCTION = "generate"
     CATEGORY = "DeepSeek_Toolkit"
 
@@ -58,7 +58,7 @@ class OpenAICompatibleLoader:
                         print(f"[DEBUG] API Response: {data}")  # 调试日志
                         response_content = data['choices'][0]['message']['content']
                         print(f"[DEBUG] Extracted Response Content: {response_content}")  # 调试日志
-                        return [response_content]  # 返回值改为列表形式
+                        return [response_content, data]  # 返回值包括 response_content 和 data
                 except Exception as e:
                     print(f"[ERROR] 请求失败: {str(e)}")  # 打印错误信息
                     raise
@@ -164,6 +164,20 @@ class OpenAICompatibleLoader:
         print(f"[DEBUG] Full Payload with Image: {json.dumps(payload, indent=2)}")  # 添加调试日志
         print(f"[DEBUG] Full Payload Sent to API: {json.dumps(payload, indent=2)}")
 
+        # Token 计算逻辑
+        def count_tokens(content):
+            return sum(len(str(item).split()) for item in content)
+
+        # 按字符分割
+        input_tokens = len(prompt)
+        if system_prompt:
+            input_tokens += len(system_prompt)
+        if image is not None:
+            # 假设每 100x100 像素消耗 50 个 token
+            width, height = image.size
+            image_tokens = (width * height) // 20000
+            input_tokens += image_tokens
+
         try:
             time.sleep(1)
             import asyncio
@@ -172,7 +186,10 @@ class OpenAICompatibleLoader:
             asyncio.set_event_loop(loop)
             try:
                 task = loop.create_task(self.async_generate(payload, actual_base_url, api_key))
-                return loop.run_until_complete(task)
+                response_content, data = loop.run_until_complete(task)
+                # Extract completion_tokens from API response
+                completion_tokens = data.get("usage", {}).get("completion_tokens", 0)
+                return [[response_content], int(input_tokens), int(completion_tokens)]
             except Exception as e:
                 print(f"[ERROR] 异步任务失败: {str(e)}")
                 raise

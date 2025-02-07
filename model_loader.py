@@ -29,7 +29,7 @@ class DeepSeekModelLoader:
         ]
 
         if not model_names:
-            print(f"在 {deepseek_janus_path} 中未找到模型，使用默认列表")
+            # print(f"在 {deepseek_janus_path} 中未找到模型，使用默认列表")
             return DeepSeekModelLoader.DEFAULT_MODELS
 
         return model_names
