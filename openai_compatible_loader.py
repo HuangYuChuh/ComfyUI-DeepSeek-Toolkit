@@ -9,7 +9,6 @@ from typing import Optional, List, Dict
 import time  # 添加时间模块
 import torch
 
-
 class OpenAICompatibleLoader:
     """
     Custom node for OpenAI compatible API integration
@@ -33,6 +32,7 @@ class OpenAICompatibleLoader:
                 "prompt": ("STRING", {"multiline": True}),
                 "temperature": ("FLOAT", {"default": 0.7, "min": 0.0, "max": 2.0}),
                 "max_tokens": ("INT", {"default": 512, "min": 1, "max": 4096}),
+                "enable_memory": ("BOOLEAN", {"default": False, "label": "Enable Memory"}),
             }
         }
 
@@ -67,12 +67,12 @@ class OpenAICompatibleLoader:
 
     def generate(self, base_url: str, api_key: str, prompt: str,
                  model: str, temperature: float,
-                 max_tokens: int, system_prompt: Optional[str] = None, image: Optional[str] = None):
-        content = []  # ⭐️ 关键修改：将 content 初始化放在函数的最开始
+                 max_tokens: int, system_prompt: Optional[str] = None, image: Optional[str] = None, enable_memory: bool = False):
+        content = []  # 将 content 初始化放在函数的最开始
 
         print(f"[DEBUG] Image parameter type: {type(image)}, value: {image}")
 
-        if image is not None: # ⭐️ 精简 image 处理逻辑，只保留一个 if image is not None 块
+        if image is not None: # 精简 image 处理逻辑，只保留一个 if image is not None 块
             # 统一处理 Tensor 和 字符串类型的 image 输入
             if isinstance(image, torch.Tensor):
                 import base64
@@ -111,7 +111,7 @@ class OpenAICompatibleLoader:
                 "content": system_prompt
             })
 
-        if content: # ⭐️ 修改：只有当 content 列表不为空时才添加到 messages
+        if content: # 只有当 content 列表不为空时才添加到 messages
             messages.append({
                 "role": "user",
                 "content": content
@@ -140,6 +140,9 @@ class OpenAICompatibleLoader:
         actual_base_url = base_url_mapping.get(base_url.strip(), base_url)
 
         # 对话历史和 payload 构建 (保持不变)
+        if not enable_memory:
+            self._conversation_history = []
+
         if not hasattr(self, "_conversation_history"):
             self._conversation_history = []
 
