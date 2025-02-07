@@ -39,7 +39,7 @@ class LLM_Loader:
     RETURN_TYPES = ("STRING", "STRING")
     RETURN_NAMES = ("base_url", "model")
     FUNCTION = "generate"
-    CATEGORY = "DeepSeek_Toolkit"
+    CATEGORY = "DeepSeek_Toolkit/Loader"
 
     # 定义 base_url 和模型的映射关系
     MODEL_MAPPING = {
