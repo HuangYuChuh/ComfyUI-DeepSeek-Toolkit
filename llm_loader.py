@@ -76,7 +76,7 @@ class LLM_Loader:
 
 # 注册节点
 NODE_CLASS_MAPPINGS = {"LLM_Loader": LLM_Loader}
-NODE_DISPLAY_NAME_MAPPINGS = {"LLM_Loader": "LLM Loader"}
+NODE_DISPLAY_NAME_MAPPINGS = {"LLM_Loader": "LLMs Loader"}
 
 WEB_DIRECTORY = "./web"
 __all__ = ['NODE_CLASS_MAPPINGS', 'NODE_DISPLAY_NAME_MAPPINGS']
