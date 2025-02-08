@@ -27,8 +27,8 @@ class OpenAICompatibleLoader:
                 "api_key": ("STRING", {"default": ""}),
                 },
             "optional": {
-                "image": ("IMAGE", {"default": None}),
-                "system_prompt": ("STRING", {"default": "我是一个可以使用LLM构建实用功能的Toolkit", "multiline": True}),
+                "processed_image": ("STRING", {"default": ""}),
+                "system_prompt": ("STRING", {"default": "你是一个AI大模型", "multiline": True}),
                 "prompt": ("STRING", {"multiline": True}),
                 "temperature": ("FLOAT", {"default": 0.7, "min": 0.0, "max": 2.0}),
                 "max_tokens": ("INT", {"default": 512, "min": 1, "max": 4096}),
@@ -55,9 +55,10 @@ class OpenAICompatibleLoader:
                     ) as response:
                         response.raise_for_status()
                         data = await response.json()
-                        print(f"[DEBUG] API Response: {data}")  # 调试日志
+                        # 移除冗长的API响应日志
                         response_content = data['choices'][0]['message']['content']
-                        print(f"[DEBUG] Extracted Response Content: {response_content}")  # 调试日志
+                        # 简化后的响应内容日志
+                        print(f"Output: {response_content[:50]}...")  # 只保留前50个字符
                         return [response_content, data]  # 返回值包括 response_content 和 data
                 except Exception as e:
                     print(f"[ERROR] 请求失败: {str(e)}")  # 打印错误信息
@@ -67,39 +68,18 @@ class OpenAICompatibleLoader:
 
     def generate(self, base_url: str, api_key: str, prompt: str,
                  model: str, temperature: float,
-                 max_tokens: int, system_prompt: Optional[str] = None, image: Optional[str] = None, enable_memory: bool = False):
+                 max_tokens: int, system_prompt: Optional[str] = None, processed_image: Optional[str] = None, enable_memory: bool = False):
         content = []  # 将 content 初始化放在函数的最开始
 
-        print(f"[DEBUG] Image parameter type: {type(image)}, value: {image}")
+        # 移除图像参数类型的日志
 
-        if image is not None: # 精简 image 处理逻辑，只保留一个 if image is not None 块
-            # 统一处理 Tensor 和 字符串类型的 image 输入
-            if isinstance(image, torch.Tensor):
-                import base64
-                from PIL import Image
-                import io
+        if processed_image:
+            # 验证 processed_image 是否为有效的 base64 编码字符串
+            if not processed_image.startswith("data:image"):
+                raise ValueError("Processed image must be a valid base64 encoded string")
 
-                # 将 Tensor 转换为 PIL 图像
-                image = image.squeeze(0).cpu().numpy()  # [H, W, C]
-                if image.shape[2] == 1:  # 灰度图像
-                    image = image.squeeze(-1)
-                image = (image * 255).astype('uint8')
-                image = Image.fromarray(image)
-
-                # 将 PIL 图像转换为 Base64 编码
-                buffered = io.BytesIO()
-                image.save(buffered, format="PNG", quality=95)  # 添加质量参数以提高图像清晰度
-                img_str = base64.b64encode(buffered.getvalue()).decode("utf-8")
-                image = f"data:image/png;base64,{img_str}"
-
-            # 如果 image 是字符串类型，验证其是否符合 Base64 格式
-            elif isinstance(image, str):
-                import re
-                if not re.match(r"^data:image\/[a-zA-Z]+;base64,", image):
-                    raise ValueError("Invalid Base64 image format")
-
-            # 将 Base64 编码的图像添加到 content 中
-            content.append({"type": "image_url", "image_url": {"url": image}})
+            # 将 processed_image 添加到 content 中
+            content.append({"type": "image_url", "image_url": {"url": processed_image}})
 
         if prompt.strip():
             content.append({"type": "text", "text": prompt})
@@ -116,8 +96,8 @@ class OpenAICompatibleLoader:
                 "role": "user",
                 "content": content
             })
-            print(f"[DEBUG] Messages with image content: {json.dumps(messages, indent=2)}")  # 添加调试日志
-        elif not prompt.strip() and not system_prompt and image is None: # ⭐️ 修改：更精确的判断用户是否提供了有效输入
+            # 移除带有图像内容的消息日志
+        elif not prompt.strip() and not system_prompt and processed_image is None: # 更精确的判断用户是否提供了有效输入
             raise ValueError("用户输入的 prompt 不能为空")
 
         # 模型选择逻辑 (保持不变)
@@ -161,8 +141,12 @@ class OpenAICompatibleLoader:
             "temperature": temperature,
             "max_tokens": max_tokens
         }
-        print(f"[DEBUG] Full Payload with Image: {json.dumps(payload, indent=2)}")  # 添加调试日志
-        print(f"[DEBUG] Full Payload Sent to API: {json.dumps(payload, indent=2)}")
+        # 移除完整的payload日志
+        # 简化后的调用日志
+        # 使用时间戳代替 uuid 生成唯一标识符
+        print(f"[{time.strftime('%Y/%m/%d %H:%M:%S')}] INFO PromptTask {int(time.time())}")
+        print(f"Input: {prompt}")
+        print(f"HTTP Request: POST {actual_base_url}/chat/completions \"HTTP/1.1 200 OK\"")
 
         # Token 计算逻辑
         def count_tokens(content):
@@ -172,10 +156,13 @@ class OpenAICompatibleLoader:
         input_tokens = len(prompt)
         if system_prompt:
             input_tokens += len(system_prompt)
-        if image is not None:
-            # 假设每 100x100 像素消耗 50 个 token
-            width, height = image.size
-            image_tokens = (width * height) // 20000
+        if processed_image:
+            # 根据 processed_image 计算 token
+            if isinstance(processed_image, str):  # Base64 编码的字符串
+                # 估算 token 数量（基于字符串长度）
+                image_tokens = len(processed_image) // 1000
+            else:
+                image_tokens = 0  # 未知类型，默认为 0
             input_tokens += image_tokens
 
         try:
@@ -194,9 +181,16 @@ class OpenAICompatibleLoader:
                 print(f"[ERROR] 异步任务失败: {str(e)}")
                 raise
             finally:
-                if hasattr(loop, 'shutdown_asyncgens'):
-                    loop.run_until_complete(loop.shutdown_asyncgens())
-                loop.close()
+                try:
+                    if hasattr(loop, 'shutdown_asyncgens'):
+                        loop.run_until_complete(loop.shutdown_asyncgens())
+                    # Ensure all tasks are done before closing the loop
+                    pending = asyncio.all_tasks(loop)
+                    if pending:
+                        print(f"[WARNING] There are {len(pending)} pending tasks. Waiting for them to complete...")
+                        loop.run_until_complete(asyncio.gather(*pending))
+                finally:
+                    loop.close()
         except Exception as e:
             raise Exception(f"请求失败: {str(e)}")
 
