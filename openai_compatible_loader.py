@@ -24,15 +24,15 @@ class OpenAICompatibleLoader:
                     "label": "模型名称",
                     "allow_edit": True
                 }),
-                "api_key": ("STRING", {"default": ""}),
-                },
+            },
             "optional": {
-                "processed_image": ("STRING", {"default": ""}),
+                "prep_img": ("STRING", {"default": "", "forceInput": True}),
                 "system_prompt": ("STRING", {"default": "你是一个AI大模型", "multiline": True}),
                 "prompt": ("STRING", {"multiline": True}),
                 "temperature": ("FLOAT", {"default": 0.7, "min": 0.0, "max": 2.0}),
                 "max_tokens": ("INT", {"default": 512, "min": 1, "max": 4096}),
                 "enable_memory": ("BOOLEAN", {"default": False, "label": "Enable Memory"}),
+                "api_key": ("STRING", {"default": ""})
             }
         }
 
@@ -53,6 +53,9 @@ class OpenAICompatibleLoader:
                         },
                         json=payload
                     ) as response:
+                        # 打印完整的请求内容以便调试
+                        print(f"[DEBUG] Full request payload: {json.dumps(payload, indent=2)}")
+                        response.raise_for_status()
                         response.raise_for_status()
                         data = await response.json()
                         # 移除冗长的API响应日志
@@ -68,18 +71,20 @@ class OpenAICompatibleLoader:
 
     def generate(self, base_url: str, api_key: str, prompt: str,
                  model: str, temperature: float,
-                 max_tokens: int, system_prompt: Optional[str] = None, processed_image: Optional[str] = None, enable_memory: bool = False):
+                 max_tokens: int, system_prompt: Optional[str] = None, prep_img: Optional[str] = None, enable_memory: bool = False):
         content = []  # 将 content 初始化放在函数的最开始
 
         # 移除图像参数类型的日志
 
-        if processed_image:
-            # 验证 processed_image 是否为有效的 base64 编码字符串
-            if not processed_image.startswith("data:image"):
+        if prep_img:
+            # 打印 prep_img 调试信息
+            print(f"[DEBUG] Received prep_img: {prep_img[:50]}...")  # 只保留前50个字符
+            # 验证 prep_img 是否为有效的 base64 编码字符串
+            if not prep_img.startswith("data:image"):
                 raise ValueError("Processed image must be a valid base64 encoded string")
 
-            # 将 processed_image 添加到 content 中
-            content.append({"type": "image_url", "image_url": {"url": processed_image}})
+            # 将 prep_img 添加到 content 中
+            content.append({"type": "image_url", "image_url": {"url": prep_img}})
 
         if prompt.strip():
             content.append({"type": "text", "text": prompt})
@@ -97,7 +102,7 @@ class OpenAICompatibleLoader:
                 "content": content
             })
             # 移除带有图像内容的消息日志
-        elif not prompt.strip() and not system_prompt and processed_image is None: # 更精确的判断用户是否提供了有效输入
+        elif not prompt.strip() and not system_prompt and prep_img is None: # 更精确的判断用户是否提供了有效输入
             raise ValueError("用户输入的 prompt 不能为空")
 
         # 模型选择逻辑 (保持不变)
@@ -133,11 +138,21 @@ class OpenAICompatibleLoader:
         if not any(msg["role"] == "user" and msg["content"] == content for msg in self._conversation_history):
             self._conversation_history.append({"role": "user", "content": content})
 
-        messages = self._conversation_history # 重新从对话历史中获取 messages
+        # 恢复 messages 的嵌套结构
+        formatted_messages = []
+        for msg in self._conversation_history:
+            if isinstance(msg["content"], list):
+                # 保留原始嵌套结构
+                formatted_messages.append({
+                    "role": msg["role"],
+                    "content": msg["content"]
+                })
+            else:
+                formatted_messages.append(msg)
 
         payload = {
             "model": selected_model,
-            "messages": messages,
+            "messages": formatted_messages,
             "temperature": temperature,
             "max_tokens": max_tokens
         }
@@ -156,11 +171,11 @@ class OpenAICompatibleLoader:
         input_tokens = len(prompt)
         if system_prompt:
             input_tokens += len(system_prompt)
-        if processed_image:
-            # 根据 processed_image 计算 token
-            if isinstance(processed_image, str):  # Base64 编码的字符串
+        if prep_img:
+            # 根据 prep_img 计算 token
+            if isinstance(prep_img, str):  # Base64 编码的字符串
                 # 估算 token 数量（基于字符串长度）
-                image_tokens = len(processed_image) // 1000
+                image_tokens = len(prep_img) // 1000
             else:
                 image_tokens = 0  # 未知类型，默认为 0
             input_tokens += image_tokens

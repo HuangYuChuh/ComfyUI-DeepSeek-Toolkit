@@ -41,19 +41,6 @@ class LLM_Loader:
     FUNCTION = "generate"
     CATEGORY = "DeepSeek_Toolkit/Loader"
 
-    # 定义 base_url 和模型的映射关系
-    MODEL_MAPPING = {
-        "Qwen/通义千问": ["qwen-turbo", "qwen-plus", "qwen-max"],
-        "DeepSeek/深度求索": ["deepseek-7b", "deepseek-33b"],
-        "DouBao/豆包": ["doubao-lite", "doubao-pro"],
-        "Spark/星火": ["spark-mini", "spark-max"],
-        "GLM/智谱清言": ["glm-130b"],
-        "Moonshot/月之暗面": ["moonshot-v1"],
-        "Baichuan/百川": ["baichuan-7b", "baichuan-13b"],
-        "MiniMax/MiniMax": ["minimax-turbo", "minimax-plus"],
-        "StepFun/阶跃星辰": ["stepfun-base", "stepfun-large"]
-    }
-
     def generate(self, base_url: str, model: str):
         # 定义 base_url 映射表
         base_url_mapping = {

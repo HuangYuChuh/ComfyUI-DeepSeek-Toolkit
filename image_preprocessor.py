@@ -17,7 +17,7 @@ class ImagePreprocessor:
             },
             "optional": {
                 "format": ("STRING", {"default": "PNG"}),
-                "quality": ("INT", {"default": 95, "min": 1, "max": 100}),
+                "quality": (["High", "Medium", "Low"], {"default": "High"}),
             }
         }
 
@@ -26,7 +26,12 @@ class ImagePreprocessor:
     FUNCTION = "preprocess"
     CATEGORY = "DeepSeek_Toolkit"
 
-    def preprocess(self, image: Optional[Union[str, Image.Image]], format: str = "PNG", quality: int = 95):
+    def preprocess(self, image: Optional[Union[str, Image.Image]], format: str = "PNG", quality: str = "High"):
+        quality_map = {"High": 95, "Medium": 75, "Low": 50}
+        quality_str = quality  # Ensure quality is treated as a string
+        quality = quality_map.get(quality_str, 95)  # Default to High if invalid value
+        print(f"Selected quality: {quality}")  # Debugging line
+
         if image is None:
             raise ValueError("Image input cannot be None")
 
@@ -42,11 +47,19 @@ class ImagePreprocessor:
         elif not isinstance(image, Image.Image):
             raise ValueError("Unsupported image type. Expected torch.Tensor or PIL.Image.")
 
+        # Resize image based on quality
+        size_map = {"High": 1024, "Medium": 768, "Low": 512}
+        max_size = size_map.get(quality_str, 1024)
+        print(f"Resizing image to max dimension: {max_size}")
+        image.thumbnail((max_size, max_size), Image.Resampling.LANCZOS)
+
         # Convert PIL image to base64 string
         buffered = io.BytesIO()
         image.save(buffered, format=format, quality=quality)
         img_str = base64.b64encode(buffered.getvalue()).decode("utf-8")
         image_url = f"data:image/{format.lower()};base64,{img_str}"
+        print(f"Image size with quality {quality}: {buffered.tell()} bytes")
+        print(f"Generated image URL: {image_url[:50]}...")  # 打印生成的图像 URL 前 50 个字符
 
         return (image_url,)
 
