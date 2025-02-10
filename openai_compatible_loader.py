@@ -118,7 +118,8 @@ class OpenAICompatibleLoader:
             "Moonshot/月之暗面": "https://api.moonshot.cn/v1",
             "Baichuan/百川": "https://api.baichuan-ai.com/v1/",
             "MiniMax/MiniMax": "https://api.minimax.chat/v1/",
-            "StepFun/阶跃星辰": "https://api.stepfun.com/v1/"
+            "StepFun/阶跃星辰": "https://api.stepfun.com/v1/",
+            "SenseChat/日日新": "https://api.sensenova.cn/compatible-mode/v1"
         }
 
         actual_base_url = base_url_mapping.get(base_url.strip(), base_url)
@@ -156,8 +157,8 @@ class OpenAICompatibleLoader:
             "max_tokens": max_tokens
         }
 
-        # 检查是否为星火大模型
-        if "spark-api-open.xf-yun.com" in actual_base_url or "api.baichuan-ai.com" in actual_base_url:
+        # 检查是否为星火大模型或 SenseChat/日日新
+        if "spark-api-open.xf-yun.com" in actual_base_url or "api.baichuan-ai.com" in actual_base_url or "api.sensenova.cn" in actual_base_url:
             # 星火大模型需要 content 为字符串
             payload["messages"] = [
                 {

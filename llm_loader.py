@@ -26,7 +26,8 @@ class LLM_Loader:
                     "Moonshot/月之暗面",
                     "Baichuan/百川",
                     "MiniMax/MiniMax",
-                    "StepFun/阶跃星辰"
+                    "StepFun/阶跃星辰",
+                    "SenseChat/日日新"
                 ], {}),
                 "model": ("STRING", {
                     "default": "",
@@ -52,7 +53,8 @@ class LLM_Loader:
             "Moonshot/月之暗面": "https://api.moonshot.cn/v1",
             "Baichuan/百川": "https://api.baichuan-ai.com/v1",
             "MiniMax/MiniMax": "https://api.minimax.chat/v1",
-            "StepFun/阶跃星辰": "https://api.stepfun.com/v1"
+            "StepFun/阶跃星辰": "https://api.stepfun.com/v1",
+            "SenseChat/日日新": "https://api.sensenova.cn/compatible-mode/v1"
         }
         
         # 获取实际的 base_url
