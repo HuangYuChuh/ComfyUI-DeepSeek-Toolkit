@@ -56,7 +56,6 @@ class OpenAICompatibleLoader:
                         # 打印完整的请求内容以便调试
                         print(f"[DEBUG] Full request payload: {json.dumps(payload, indent=2)}")
                         response.raise_for_status()
-                        response.raise_for_status()
                         data = await response.json()
                         # 移除冗长的API响应日志
                         response_content = data['choices'][0]['message']['content']
@@ -156,13 +155,50 @@ class OpenAICompatibleLoader:
             "temperature": temperature,
             "max_tokens": max_tokens
         }
+
+        # 检查是否为星火大模型
+        if "spark-api-open.xf-yun.com" in actual_base_url or "api.baichuan-ai.com" in actual_base_url:
+            # 星火大模型需要 content 为字符串
+            payload["messages"] = [
+                {
+                    "role": "system",
+                    "content": system_prompt
+                },
+                {
+                    "role": "user",
+                    "content": prompt if isinstance(prompt, str) else prompt[0]["text"]
+                }
+            ]
+        else:
+            # 其他模型保持现有结构
+            payload["messages"] = formatted_messages
+
+        # 简化后的调试日志
+        print(f"[DEBUG] Using model: {selected_model}")
+        print(f"[DEBUG] Base URL: {actual_base_url}")
+
+        # 确保 temperature 和 max_tokens 参数符合范围
+        if not isinstance(temperature, float):
+            try:
+                temperature = float(temperature)
+            except ValueError:
+                raise ValueError(f"temperature 参数无法转换为浮点数: {temperature}")
+            if not (0.0 <= temperature <= 2.0):
+                raise ValueError(f"temperature 参数超出范围: {temperature}")
+            
+            try:
+                max_tokens = int(max_tokens)
+            except ValueError:
+                raise ValueError(f"max_tokens 参数无法转换为整数: {max_tokens}")
+            if not (1 <= max_tokens <= 4096):
+                raise ValueError(f"max_tokens 参数超出范围: {max_tokens}")
+
         # 移除完整的payload日志
         # 简化后的调用日志
         # 使用时间戳代替 uuid 生成唯一标识符
         print(f"[{time.strftime('%Y/%m/%d %H:%M:%S')}] INFO PromptTask {int(time.time())}")
         print(f"Input: {prompt}")
         print(f"HTTP Request: POST {actual_base_url}/chat/completions \"HTTP/1.1 200 OK\"")
-
         # Token 计算逻辑
         def count_tokens(content):
             return sum(len(str(item).split()) for item in content)
