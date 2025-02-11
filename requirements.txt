@@ -4,3 +4,7 @@ numpy
 Pillow
 aiohttp
 transformers
+comfy
+folder_paths
+nodes
+janus.models
