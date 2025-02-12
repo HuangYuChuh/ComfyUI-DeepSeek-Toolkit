@@ -12,7 +12,7 @@ ComfyUI-DeepSeek_Toolkit是受到 DeepSeek 大模型爆发而来的灵感，既�
 2. 克隆本仓库到 ComfyUI 的 custom_nodes 目录：
    ```bash
    cd custom_nodes
-   git clone https://github.com/your-username/ComfyUI-DeepSeek_Toolkit.git
+   git clone https://github.com/HuangYuChuh/ComfyUI-DeepSeek-Toolkit.git
    ```
 3. 安装依赖：
    ```bash
