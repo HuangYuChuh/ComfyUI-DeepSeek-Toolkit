@@ -27,6 +27,7 @@ class OpenAICompatibleLoader:
             },
             "optional": {
                 "prep_img": ("STRING", {"default": "", "forceInput": True}),
+                "video_url": ("STRING", {"default": "", "forceInput": True, "label": "Video URL"}), # 新增视频URL输入
                 "system_prompt": ("STRING", {"default": "你是一个AI大模型", "multiline": True}),
                 "prompt": ("STRING", {"multiline": True}),
                 "temperature": ("FLOAT", {"default": 0.7, "min": 0.0, "max": 2.0}),
@@ -70,7 +71,7 @@ class OpenAICompatibleLoader:
 
     def generate(self, base_url: str, api_key: str, prompt: str,
                  model: str, temperature: float,
-                 max_tokens: int, system_prompt: Optional[str] = None, prep_img: Optional[str] = None, enable_memory: bool = False):
+                 max_tokens: int, system_prompt: Optional[str] = None, prep_img: Optional[str] = None, video_url: Optional[str] = None, enable_memory: bool = False): # 新增video_url参数
         content = []  # 将 content 初始化放在函数的最开始
 
         # 移除图像参数类型的日志
@@ -84,6 +85,9 @@ class OpenAICompatibleLoader:
 
             # 将 prep_img 添加到 content 中
             content.append({"type": "image_url", "image_url": {"url": prep_img}})
+
+        if video_url: # 如果提供了视频URL，则将其添加到content中
+            content.append({"type": "video_url", "video_url": {"url": video_url}})
 
         if prompt.strip():
             content.append({"type": "text", "text": prompt})
@@ -101,7 +105,7 @@ class OpenAICompatibleLoader:
                 "content": content
             })
             # 移除带有图像内容的消息日志
-        elif not prompt.strip() and not system_prompt and prep_img is None: # 更精确的判断用户是否提供了有效输入
+        elif not prompt.strip() and not system_prompt and prep_img is None and video_url is None: # 更精确的判断用户是否提供了有效输入
             raise ValueError("用户输入的 prompt 不能为空")
 
         # 模型选择逻辑 (保持不变)
@@ -216,6 +220,9 @@ class OpenAICompatibleLoader:
             else:
                 image_tokens = 0  # 未知类型，默认为 0
             input_tokens += image_tokens
+        if video_url:
+            video_tokens = len(video_url) // 1000 # 估算token
+            input_tokens += video_tokens
 
         try:
             time.sleep(1)
