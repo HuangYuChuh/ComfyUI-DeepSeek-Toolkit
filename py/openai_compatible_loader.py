@@ -235,7 +235,7 @@ class OpenAICompatibleLoader:
                 response_content, data = loop.run_until_complete(task)
                 # Extract completion_tokens from API response
                 completion_tokens = data.get("usage", {}).get("completion_tokens", 0)
-                return [[response_content], int(input_tokens), int(completion_tokens)]
+                return [response_content, int(input_tokens), int(completion_tokens)]
             except Exception as e:
                 print(f"[ERROR] 异步任务失败: {str(e)}")
                 raise

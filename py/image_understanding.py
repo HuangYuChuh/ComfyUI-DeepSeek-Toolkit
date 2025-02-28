@@ -1,122 +1,71 @@
 import torch
-import numpy as np
 from PIL import Image
 import logging
 
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
-class DeepSeekImageUnderstanding:
-    """Image Understanding Node for DeepSeek Janus"""
+class DeepSeekImageAnalyst:
+    """Analyzes images using DeepSeek models"""
     
     @classmethod
     def INPUT_TYPES(cls):
         return {
             "required": {
-                "model": ("DEEPSEEK_MODEL",),
-                "tokenizer": ("DEEPSEEK_TOKENIZER",),
-                "image": ("IMAGE",),
-                "question": ("STRING", {
-                    "multiline": True,
-                    "default": "Describe this image in detail."
-                }),
-            },
+                "model": ("MODEL", {}),
+                "image": ("IMAGE", {}),
+                "prompt": ("STRING", {"default": ""}),
+                "max_tokens": ("INT", {"default": 50, "min": 1, "max": 512})
+            }
         }
-    
+
     RETURN_TYPES = ("STRING",)
-    RETURN_NAMES = ("text",)
-    FUNCTION = "understand_image"
-    CATEGORY = "DeepSeek_Toolkit/DeepSeek_Multimodal"
+    FUNCTION = "analyze_image"
+    CATEGORY = "DeepSeek"
 
-    def understand_image(self, model, tokenizer, image, question):
-        """
-        Analyze an image using DeepSeek's multi-modal model
-        
-        Args:
-            model: DeepSeek vision-language model
-            tokenizer: Model's image processor
-            image: Input torch tensor image
-            question: User's query about the image
-        
-        Returns:
-            Textual analysis of the image
-        """
+    def analyze_image(self, model, image: Image.Image, prompt: str, max_tokens: int):
+        logger.info("Starting image analysis")
         try:
-            # Log the image parameter
-            logger.info(f"Received image tensor with shape: {image.shape}")
-
-            # 图像预处理
-            if len(image.shape) == 4:  # BCHW format
-                if image.shape[0] == 1:
-                    image = image.squeeze(0)  # Remove batch dimension
+            # Ensure the model is on the correct device
+            device = next(model.parameters()).device
             
-            # Normalize and convert to uint8 numpy
-            image = (torch.clamp(image, 0, 1) * 255).cpu().numpy().astype(np.uint8)
+            # Prepare inputs
+            inputs = self._prepare_inputs(image, prompt, max_tokens)
             
-            # Convert to PIL Image
-            pil_image = Image.fromarray(image, mode='RGB')
-
-            # 构建对话上下文
-            conversation = [
-                {
-                    "role": "user",
-                    "content": f"<image_placeholder>\n{question}",
-                    "images": [pil_image],
-                }
-            ]
-
-            # 准备模型输入
-            model_inputs = tokenizer(
-                conversations=conversation, 
-                images=[pil_image], 
-                return_tensors='pt'
-            ).to(model.device)
-
-            try:
-                # 首先尝试使用 text_generate
-                with torch.no_grad():
-                    outputs = model.generate(
-                        **model_inputs,
-                        max_new_tokens=512,
-                        do_sample=False
-                    )
-            except AttributeError:
-                try:
-                    # 如果 text_generate 不可用，尝试使用 chat
-                    with torch.no_grad():
-                        outputs = model.chat(
-                            tokenizer,
-                            question,
-                            history=[],
-                            images=[pil_image],
-                            max_new_tokens=512,
-                            do_sample=False
-                        )
-                        return (outputs,)
-                except AttributeError:
-                    # 如果 chat 也不可用，使用标准 generate
-                    with torch.no_grad():
-                        outputs = model.generate(
-                            **model_inputs,
-                            max_new_tokens=512,
-                            do_sample=False
-                        )
-
-            # 解码响应
-            answer = tokenizer.decode(outputs[0], skip_special_tokens=True)
-            
-            return (answer,)
-
+            # Generate response
+            with torch.no_grad():
+                outputs = model.generate(
+                    inputs["input_ids"].to(device),
+                    attention_mask=inputs["attention_mask"].to(device),
+                    max_length=max_tokens
+                )
+                
+            decoded_output = self._decode_outputs(outputs, model)
+            logger.info("Image analysis completed successfully")
+            return (decoded_output,)
+        
         except Exception as e:
-            logger.error(f"Error in image understanding: {e}", exc_info=True)
-            return ("An error occurred during image analysis.",)
+            logger.error(f"Error during image analysis: {str(e)}", exc_info=True)
+            raise
 
-# 节点类映射
+    def _prepare_inputs(self, image: Image.Image, prompt: str, max_tokens: int):
+        # Placeholder for input preparation logic
+        # This should be replaced with actual tokenizer implementation
+        return {
+            "input_ids": torch.tensor([[1, 2, 3]]),  # Example tensor
+            "attention_mask": torch.tensor([[1, 1, 1]])
+        }
+
+    def _decode_outputs(self, outputs, model):
+        # Placeholder for output decoding logic
+        # This should be replaced with actual tokenizer implementation
+        return "Analysis result"
+
+# Node mappings
 NODE_CLASS_MAPPINGS = {
-    "DeepSeekImageUnderstanding": DeepSeekImageUnderstanding
+    "DeepSeekImageAnalyst": DeepSeekImageAnalyst
 }
 
-# 节点显示名称映射
+# Node display name mappings
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "DeepSeekImageUnderstanding": "DeepSeek Image Understanding"
+    "DeepSeekImageAnalyst": "DeepSeek Image Analyst"
 }
