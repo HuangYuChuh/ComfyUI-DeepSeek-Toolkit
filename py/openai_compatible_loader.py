@@ -7,7 +7,9 @@ import asyncio
 from aiohttp import ClientSession, ClientError
 from typing import Optional, List, Dict
 import time  # 添加时间模块
+import random  # 添加随机数模块
 import torch
+
 
 class OpenAICompatibleLoader:
     """
@@ -55,7 +57,8 @@ class OpenAICompatibleLoader:
                         json=payload
                     ) as response:
                         # 打印完整的请求内容以便调试
-                        print(f"[DEBUG] Full request payload: {json.dumps(payload, indent=2)}")
+                        # Simplified debug log
+                        print(f"[DEBUG] Request sent to model: {payload['model']}, temp: {payload['temperature']}, max_tokens: {payload['max_tokens']}")
                         response.raise_for_status()
                         data = await response.json()
                         # 移除冗长的API响应日志
@@ -71,8 +74,9 @@ class OpenAICompatibleLoader:
 
     def generate(self, base_url: str, api_key: str, prompt: str,
                  model: str, temperature: float,
-                 max_tokens: int, system_prompt: Optional[str] = None, prep_img: Optional[str] = None, video_url: Optional[str] = None, enable_memory: bool = False): # 新增video_url参数
-        content = []  # 将 content 初始化放在函数的最开始
+                 max_tokens: int, system_prompt: Optional[str] = None, prep_img: Optional[str] = None, video_url: Optional[str] = None, enable_memory: bool = False, seed: Optional[int] = None): # 添加seed参数
+
+        content = []  # 初始化内容列表
 
         # 移除图像参数类型的日志
 
@@ -125,7 +129,6 @@ class OpenAICompatibleLoader:
             "StepFun/阶跃星辰": "https://api.stepfun.com/v1/",
             "SenseChat/日日新": "https://api.sensenova.cn/compatible-mode/v1"
         }
-
         actual_base_url = base_url_mapping.get(base_url.strip(), base_url)
 
         # 对话历史和 payload 构建 (保持不变)
@@ -139,29 +142,47 @@ class OpenAICompatibleLoader:
             self._conversation_history.append({"role": "system", "content": system_prompt})
 
         # 避免重复添加内容
-        if not any(msg["role"] == "user" and msg["content"] == content for msg in self._conversation_history):
-            self._conversation_history.append({"role": "user", "content": content})
-
-        # 恢复 messages 的嵌套结构
-        formatted_messages = []
-        for msg in self._conversation_history:
-            if isinstance(msg["content"], list):
-                # 保留原始嵌套结构
-                formatted_messages.append({
-                    "role": msg["role"],
-                    "content": msg["content"]
-                })
-            else:
-                formatted_messages.append(msg)
-
+        # 修改对话历史添加逻辑
+        if enable_memory:
+            if not any(msg["role"] == "user" and msg["content"] == content for msg in self._conversation_history):
+                self._conversation_history.append({"role": "user", "content": content})
+        else:
+            # 当禁用记忆时，总是创建新的对话历史
+            self._conversation_history = [{"role": "user", "content": content}]
+        # 重构消息格式化逻辑
+        if enable_memory:
+            # 使用对话历史生成消息
+            formatted_messages = []
+            for msg in self._conversation_history:
+                if isinstance(msg["content"], list):
+                    formatted_messages.append({
+                        "role": msg["role"],
+                        "content": msg["content"]
+                    })
+                else:
+                    formatted_messages.append(msg)
+        else:
+            # 当禁用记忆时，直接使用当前消息
+            formatted_messages = [
+                {
+                    "role": "user",
+                    "content": content
+                }
+            ]
+        # 添加时间戳确保请求唯一性
+        # 处理随机种子
+        seed_value = seed if seed is not None else random.randint(1, 1000000)
+        
         payload = {
             "model": selected_model,
             "messages": formatted_messages,
             "temperature": temperature,
-            "max_tokens": max_tokens
+            "max_tokens": max_tokens,
+            "request_id": f"req-{int(time.time() * 1000)}-{hash(str(content))}",  # 唯一请求ID
+            "timestamp": int(time.time() * 1000),  # 毫秒级时间戳
+            "seed": seed_value  # 添加随机种子
         }
-
-        # 检查是否为星火大模型或 SenseChat/日日新
+        
         if "spark-api-open.xf-yun.com" in actual_base_url or "api.baichuan-ai.com" in actual_base_url or "api.sensenova.cn" in actual_base_url:
             # 星火大模型需要 content 为字符串
             payload["messages"] = [
