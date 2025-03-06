@@ -18,7 +18,7 @@ class DeepSeekModelLoader:
 
     RETURN_TYPES = ("MODEL", "TOKENIZER")
     FUNCTION = "load_model"
-    CATEGORY = "DeepSeek"
+    CATEGORY = "DeepSeek_Toolkit"
 
     def load_model(self, model_path: str, device: str = "cuda"):
         logger.info(f"Loading model from {model_path} onto {device}")

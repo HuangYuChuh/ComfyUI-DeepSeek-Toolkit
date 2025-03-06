@@ -20,7 +20,7 @@ class DeepSeekImageAnalyst:
 
     RETURN_TYPES = ("STRING",)
     FUNCTION = "analyze_image"
-    CATEGORY = "DeepSeek"
+    CATEGORY = "DeepSeek_Toolkit"
 
     def analyze_image(self, model, image: Image.Image, prompt: str, max_tokens: int):
         logger.info("Starting image analysis")
