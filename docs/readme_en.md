@@ -1,76 +1,109 @@
-# ComfyUI-DeepSeek-Toolkit Technical Documentation
+# 🚀 ComfyUI-LLMs-Toolkit
 
-## 1. Project Introduction
+<div align="right">
 
-ComfyUI-DeepSeek-Toolkit is a custom node package for ComfyUI that enables users to leverage powerful AI large language models (LLMs) from various Chinese providers, such as DeepSeek, Qwen, and others. The toolkit aims to make these advanced models accessible to a wider audience, even those with limited computational resources.
+**Language / 语言**
+| [🇨🇳 中文](../README.md) | [🇺🇸 English](readme_en.md) |
+|---------|---------|
 
-The project was inspired by the emergence of impressive LLMs like DeepSeek and Qwen. It seeks to bridge the gap between cutting-edge AI technology and everyday users by providing a lightweight and API-driven solution for integrating these models into ComfyUI workflows.
+</div>
 
-The mission of ComfyUI-DeepSeek-Toolkit is to empower developers and creatives to accomplish tasks that would typically require significant computational power on readily available hardware, such as older laptops. The project envisions a future where AI is democratized and accessible to all.
+**Inject powerful Large Language Models into your ComfyUI workflows!**
 
-## 2. Functionality
+[![GitHub Stars](https://img.shields.io/github/stars/HuangYuChuh/ComfyUI-LLMs-Toolkit?style=flat-square&logo=github)](https://github.com/HuangYuChuh/ComfyUI-LLMs-Toolkit/stargazers)
+[![GitHub Forks](https://img.shields.io/github/forks/HuangYuChuh/ComfyUI-LLMs-Toolkit?style=flat-square&logo=github)](https://github.com/HuangYuChuh/ComfyUI-LLMs-Toolkit/network)
+[![License](https://img.shields.io/github/license/HuangYuChuh/ComfyUI-LLMs-Toolkit?style=flat-square)](https://github.com/HuangYuChuh/ComfyUI-LLMs-Toolkit/blob/main/LICENSE)
 
-This toolkit supports calling a diverse range of Chinese AI large language models, including:
+> A ComfyUI custom node suite integrating leading Large Language Models worldwide
 
-*   **DeepSeek**
-*   **通义千问 (Qwen)**
-*   **豆包 (Doubao)**
-*   **星火 (Spark)**
-*   **智谱清言 (GLM)**
-*   **月之暗面 (Moonshot)**
-*   **百川 (Baichuan)**
-*   **MiniMax**
-*   **阶跃星辰**
+## 📖 Project Overview
 
-For detailed instructions on how to call each model, please refer to the [LLM API 调用指南（中国版）](https://github.com/HuangYuChuh/ComfyUI-DeepSeek-Toolkit/blob/main/LLM%20API%20%E8%B0%83%E7%94%A8%E6%8C%87%E5%8D%97%EF%BC%88%E4%B8%AD%E5%9B%BD%E7%89%88%EF%BC%89.md).
+ComfyUI-LLMs-Toolkit is designed specifically for ComfyUI, seamlessly integrating excellent Large Language Models such as DeepSeek, Qwen, GPT, and others into your AI workflows.
 
-The toolkit includes modules for:
+## 🚀 Quick Start
 
-*   **LLM Loading:** Nodes for loading and configuring different LLMs.
-*   **Image Generation:** Nodes for generating images using LLMs.
-*   **Image Understanding:** Nodes for analyzing and understanding images using LLMs.
-*   **Model Loading:** Nodes for loading various models required for different tasks.
-*   **OpenAI Compatible Loading:** Nodes for loading models compatible with the OpenAI API.
-*   **Image Preprocessing:** Nodes for preprocessing images before feeding them into LLMs.
+### 📋 Installation Steps
 
-These modules can be seamlessly integrated into ComfyUI workflows, allowing users to create complex and customized AI-powered applications.
+```bash
+# 1. Clone the project to ComfyUI's custom_nodes directory
+cd ComfyUI/custom_nodes/
+git clone https://github.com/HuangYuChuh/ComfyUI-LLMs-Toolkit.git
 
-## 3. Technical Stack
+# 2. Enter project directory
+cd ComfyUI-LLMs-Toolkit
 
-*   **Programming Language:** Python
-*   **Dependencies:**
-    *   git+https://github.com/deepseek-ai/Janus.git
-    *   torch
-    *   numpy
-    *   Pillow
-    *   aiohttp
-    *   transformers
+# 3. Install dependencies
+pip install -r requirements.txt
+```
 
-The toolkit utilizes an API-centric approach to interact with the various LLMs. The API details, including base URLs and API key acquisition instructions, can be found in the [LLM API 调用指南（中国版）](https://github.com/HuangYuChuh/ComfyUI-DeepSeek-Toolkit/blob/main/LLM%20API%20%E8%B0%83%E7%94%A8%E6%8C%87%E5%8D%97%EF%BC%88%E4%B8%AD%E5%9B%BD%E7%89%88%EF%BC%89.md).
+### ⚙️ Environment Configuration
 
-## 4. Target Audience
+#### 1. Create Environment Variable File
 
-ComfyUI-DeepSeek-Toolkit is designed for:
+```bash
+# Copy the environment variable example file
+cp config/env.example .env
+```
 
-*   **ComfyUI users:** Those who want to integrate powerful LLMs into their workflows.
-*   **AI developers:** Those who want to experiment with and build applications using Chinese LLMs.
-*   **Researchers:** Those who want to study and analyze the capabilities of different LLMs.
-*   **Creatives:** Those who want to use AI to enhance their creative process.
+#### 2. Configure API Keys
 
-The toolkit is suitable for users with a basic understanding of ComfyUI and Python. Familiarity with AI concepts and LLMs is helpful but not required.
+Edit the `.env` file and fill in your API configuration:
 
-## 5. Next Steps
+```bash
+# DeepSeek Configuration (fill in at least one)
+DEEPSEEK_API_KEY=your_deepseek_api_key_here
+DEEPSEEK_BASE_URL=https://api.deepseek.com
+DEEPSEEK_MODEL_NAME=deepseek-chat
 
-The project roadmap includes the following planned features and improvements:
+# Qwen Configuration
+QWEN_API_KEY=your_qwen_api_key_here
+QWEN_BASE_URL=https://dashscope.aliyun.com/api/v1
+QWEN_MODEL_NAME=qwen-max
 
-*   **Expanding support for more LLMs:** Continuously adding support for new and emerging Chinese LLMs.
-*   **Optimizing performance:** Improving the efficiency and speed of the toolkit.
-*   **Adding more pre-built workflows:** Providing more ready-to-use workflows for common tasks.
-*   **Improving documentation:** Creating more comprehensive and user-friendly documentation.
-*   **Adding more image processing nodes:** Expanding the image processing capabilities of the toolkit.
+# OpenAI Configuration
+OPENAI_API_KEY=your_openai_api_key_here
+OPENAI_BASE_URL=https://api.openai.com/v1
+OPENAI_MODEL_NAME=gpt-3.5-turbo
+```
 
-## 6. Humanistic Conception
+### 🎯 Basic Usage
 
-ComfyUI-DeepSeek-Toolkit is driven by a vision of democratizing AI and making it accessible to everyone. The project aims to empower developers and creatives, especially those with limited resources, to leverage the power of AI to create innovative solutions and express their creativity.
+1. **Restart ComfyUI** - Restart ComfyUI after configuration to load nodes
+2. **Add Nodes** - Find the \`LLMs Toolkit\` category in the node menu
+3. **Configure Model** - Select the LLM model and parameters you want to use
+4. **Start Creating** - Connect workflows to begin your AI creation journey
 
-The project's humanistic conception is rooted in the belief that AI should be a tool for empowerment, not a source of inequality. By providing a lightweight and accessible solution for integrating powerful LLMs into ComfyUI workflows, ComfyUI-DeepSeek-Toolkit strives to make AI a more inclusive and equitable technology.
+## 🌟 Supported Models
+
+### 🇨🇳 Chinese Large Language Models
+
+| Model | Provider | Key Features | Config Prefix |
+|-------|----------|--------------|---------------|
+| DeepSeek-V3 | DeepSeek | Superior reasoning, code generation | \`DEEPSEEK_\` |
+| Qwen-Max | Alibaba Cloud | Multimodal understanding, Chinese optimization | \`QWEN_\` |
+| Doubao-Pro | ByteDance | Dialogue generation, creative writing | \`DOUBAO_\` |
+| Spark-Max | iFLYTEK | Language understanding, text analysis | \`SPARK_\` |
+| GLM-4 | Zhipu AI | Knowledge Q&A, logical reasoning | \`GLM_\` |
+| Moonshot-V1 | Moonshot AI | Long text processing | \`MOONSHOT_\` |
+
+### 🌍 International Large Language Models
+
+| Model | Provider | Key Features | Config Prefix |
+|-------|----------|--------------|---------------|
+| GPT-4 | OpenAI | General intelligence, multimodal | \`OPENAI_\` |
+| Claude | Anthropic | Safe dialogue, long text | \`CLAUDE_\` |
+| Gemini | Google | Multimodal understanding | \`GEMINI_\` |
+
+## 📄 License
+
+This project is licensed under the [GPL-2.0](../LICENSE) open source license.
+
+---
+
+<div align="center">
+
+**⭐ If this project helps you, please give us a Star!**
+
+[![Star History Chart](https://api.star-history.com/svg?repos=HuangYuChuh/ComfyUI-LLMs-Toolkit&type=Date)](https://star-history.com/#HuangYuChuh/ComfyUI-LLMs-Toolkit&Date)
+
+</div>
