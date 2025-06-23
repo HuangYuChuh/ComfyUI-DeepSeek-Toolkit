@@ -65,18 +65,29 @@ ComfyUI-LLMs-Toolkit 是一个高性能的ComfyUI扩展，专为AI创作者设�
 - **内存**: \`>= 4GB RAM\`
 - **网络**: 稳定的互联网连接
 
-### ⚡ 闪电安装
+### ⚡ 安装步骤
 
-\`\`\`bash
-# 🎯 方式一：Git克隆（推荐）
+#### 方法一：ComfyUI Manager（推荐）
+
+1. 在ComfyUI中打开 **Manager** 面板
+2. 搜索 `ComfyUI-LLMs-Toolkit`
+3. 点击 **安装** 并重启ComfyUI
+
+#### 方法二：手动安装
+
+```bash
+# 进入ComfyUI的custom_nodes目录
 cd ComfyUI/custom_nodes/
+
+# 克隆项目
 git clone https://github.com/HuangYuChuh/ComfyUI-LLMs-Toolkit.git
+
+# 进入项目目录
 cd ComfyUI-LLMs-Toolkit
 
-# 📦 安装依赖
+# 安装依赖
 pip install -r requirements.txt
-\`\`\`
-
+```
 
 ### ⚙️ 环境配置
 
