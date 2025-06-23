@@ -32,7 +32,7 @@ ComfyUI-LLMs-Toolkit 是一个高性能的ComfyUI扩展，专为AI创作者设�
 - **🚀 零硬件门槛**：无需高端GPU，仅需API即可享受前沿AI能力
 - **🌍 全球模型支持**：集成中外主流LLM，一站式解决方案
 - **⚡ 高性能架构**：优化的并发处理，大幅提升工作流效率
-- **🛠️ 极客友好**：环境变量配置，Docker支持，开发者至上
+- **��️ 极客友好** - 环境变量配置，开发者至上
 
 ---
 
@@ -53,7 +53,6 @@ ComfyUI-LLMs-Toolkit 是一个高性能的ComfyUI扩展，专为AI创作者设�
 - **🛡️ 安全为先**：环境变量配置，密钥安全管理
 - **🔄 热重载**：动态配置更新，无需重启ComfyUI
 - **📊 智能缓存**：响应缓存机制，降低API调用成本
-- **🐳 容器化**：Docker支持，一致性部署环境
 
 ---
 
@@ -78,11 +77,6 @@ cd ComfyUI-LLMs-Toolkit
 pip install -r requirements.txt
 \`\`\`
 
-\`\`\`bash
-# 🐳 方式二：Docker部署
-docker pull your-dockerhub/comfyui-llms-toolkit:latest
-docker run -d --name comfyui-llms -p 8188:8188 your-dockerhub/comfyui-llms-toolkit
-\`\`\`
 
 ### ⚙️ 环境配置
 
